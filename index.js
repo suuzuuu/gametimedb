@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
@@ -31,6 +32,19 @@ async function testConnection() {
     console.error('❌ Database connection failed:', error.message);
   }
 }
+
+// Add this after your middleware section and before your API routes
+app.use(express.static('public')); // Serves static files from 'public' directory
+
+// Root route - serve login.html first
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Route to serve index.html after successful login
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Login endpoint
 app.post('/api/login', async (req, res) => {

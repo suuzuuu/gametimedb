@@ -13,7 +13,13 @@
             <p class="text-gray-400">Please sign in to your account</p>
         </div>
         
-        <form class="space-y-6">
+        <form class="space-y-6" id="loginForm">
+            <!-- Error message display -->
+            <div id="errorMessage" class="hidden bg-red-600 text-white p-3 rounded-md text-sm"></div>
+            
+            <!-- Success message display -->
+            <div id="successMessage" class="hidden bg-green-600 text-white p-3 rounded-md text-sm"></div>
+            
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
                     Username
@@ -62,7 +68,8 @@
             
             <button 
                 type="submit"
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                id="loginButton"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 Sign In
             </button>
@@ -77,5 +84,80 @@
             </p>
         </div>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const loginButton = document.getElementById('loginButton');
+            
+            // Hide previous messages
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+            
+            // Show loading state
+            loginButton.textContent = 'Signing In...';
+            loginButton.disabled = true;
+            
+            // Prepare login data
+            const loginData = {
+                username: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success message
+                    successMessage.textContent = data.message;
+                    successMessage.classList.remove('hidden');
+                    
+                    // Optional: Clear form
+                    form.reset();
+                    
+                    // Optional: Redirect after successful login
+                    setTimeout(() => {
+                        console.log('Login successful for user:', data.user.username);
+                        // You can redirect to another page here
+                        // window.location.href = '/dashboard.html';
+                    }, 1500);
+                    
+                } else {
+                    // Show error message
+                    errorMessage.textContent = data.message;
+                    errorMessage.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'Network error. Please check your connection and try again.';
+                errorMessage.classList.remove('hidden');
+            } finally {
+                // Reset button state
+                loginButton.textContent = 'Sign In';
+                loginButton.disabled = false;
+            }
+        });
+
+        // Optional: Handle Enter key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
 </body>
 </html>

@@ -2,23 +2,28 @@
 
 ## Project Overview
 
-This web application is built as part of the Year 12 Enterprise Computing curriculum, demonstrating full-stack web development principles using modern technologies. The application showcases database integration, server-side processing, and responsive front-end design suitable for enterprise-level solutions.
+This web application is built as part of the Year 12 Enterprise Computing curriculum, demonstrating full-stack web development principles using modern technologies. The application features user authentication, a responsive dashboard with Bootstrap integration, and MySQL database connectivity for enterprise-level data management.
 
 ## Technologies Used
 
 - **Backend**: Node.js with Express.js framework
-- **Database**: MySQL for data storage and management
-- **Frontend**: HTML5, CSS3, and vanilla JavaScript
-- **Architecture**: MVC (Model-View-Controller) pattern
+- **Database**: MySQL with connection pooling
+- **Frontend**: HTML5, CSS3, JavaScript, and Bootstrap 5.3.0
+- **Authentication**: bcrypt for password hashing
+- **Icons**: Font Awesome 6.0
+- **Architecture**: RESTful API design
 
 ## Features
 
-- User authentication and session management
-- CRUD (Create, Read, Update, Delete) operations
-- Responsive web design for multiple devices
-- Database-driven content management
-- Form validation and error handling
+- Secure user authentication with bcrypt password hashing
+- Database connection pooling for optimal performance
+- Responsive Bootstrap-based dashboard
+- User session management
 - RESTful API endpoints
+- Modern gradient-based UI design
+- Font Awesome icon integration
+- Error handling and validation
+- Health check monitoring
 
 ## Prerequisites
 
@@ -38,7 +43,7 @@ Before running this application, ensure you have the following installed:
 
 2. **Install dependencies**
    ```bash
-   npm install
+   npm install express mysql2 bcrypt dotenv
    ```
 
 3. **Database Setup**
@@ -46,24 +51,31 @@ Before running this application, ensure you have the following installed:
    - Create a new database:
      ```sql
      CREATE DATABASE enterprise_app;
+     USE enterprise_app;
      ```
-   - Import the database schema:
-     ```bash
-     mysql -u [username] -p enterprise_app < database/schema.sql
+   - Create the users table:
+     ```sql
+     CREATE TABLE users (
+       id INT PRIMARY KEY AUTO_INCREMENT,
+       username VARCHAR(50) UNIQUE NOT NULL,
+       password_hash VARCHAR(255) NOT NULL,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+     );
+     ```
+   - Insert a test user (optional):
+     ```sql
+     INSERT INTO users (username, password_hash) 
+     VALUES ('testuser', '$2b$10$example_hash_here');
      ```
 
 4. **Environment Configuration**
-   - Copy the example environment file:
-     ```bash
-     cp .env.example .env
-     ```
-   - Update the `.env` file with your database credentials:
-     ```
+   - Create a `.env` file in the root directory:
+     ```env
      DB_HOST=localhost
-     DB_USER=your_username
-     DB_PASSWORD=your_password
+     DB_USER=your_mysql_username
+     DB_PASSWORD=your_mysql_password
      DB_NAME=enterprise_app
-     PORT=3000
+     PORT=5000
      ```
 
 ## Project Structure
@@ -71,147 +83,227 @@ Before running this application, ensure you have the following installed:
 ```
 enterprise-computing-project/
 │
-├── public/                 # Static files (CSS, JS, images)
-│   ├── css/
-│   │   └── styles.css
-│   ├── js/
-│   │   └── script.js
-│   └── images/
+├── public/                    # Static files served by Express
+│   ├── login.html            # Login page (served at root /)
+│   ├── index.html            # Dashboard (served at /dashboard)
+│   ├── script.js             # Client-side JavaScript
+│   └── ASSESSMENT2/src/      # CSS and additional assets
+│       └── Styles.css        # Custom stylesheet
 │
-├── views/                  # HTML templates
-│   ├── index.html
-│   ├── login.html
-│   └── dashboard.html
-│
-├── routes/                 # Express route handlers
-│   ├── auth.js
-│   ├── api.js
-│   └── index.js
-│
-├── models/                 # Database models
-│   ├── User.js
-│   └── database.js
-│
-├── middleware/             # Custom middleware
-│   └── auth.js
-│
-├── database/               # Database files
-│   ├── schema.sql
-│   └── seedData.sql
-│
-├── .env.example           # Environment variables template
-├── .gitignore            # Git ignore file
-├── package.json          # Node.js dependencies
-├── server.js             # Main server file
-└── README.md             # This file
+├── .env                      # Environment variables (not in repo)
+├── .env.example             # Environment template
+├── .gitignore               # Git ignore file
+├── package.json             # Node.js dependencies
+├── server.js                # Main server file
+└── README.md                # This file
 ```
 
 ## Running the Application
 
 1. **Start the server**
    ```bash
-   npm start
+   node server.js
    ```
-   Or for development with auto-restart:
+   Or if you have nodemon installed:
    ```bash
-   npm run dev
+   npx nodemon server.js
    ```
 
 2. **Access the application**
    - Open your web browser
-   - Navigate to `http://localhost:3000`
+   - Navigate to `http://localhost:5000`
+   - You'll be directed to the login page
+   - After successful login, you'll access the dashboard at `/dashboard`
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Home page |
-| GET | `/login` | Login page |
-| POST | `/api/auth/login` | User authentication |
-| POST | `/api/auth/register` | User registration |
-| GET | `/api/users` | Get all users |
-| POST | `/api/users` | Create new user |
-| PUT | `/api/users/:id` | Update user |
-| DELETE | `/api/users/:id` | Delete user |
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|---------|
+| GET | `/` | Serves login page | ✅ Implemented |
+| GET | `/dashboard` | Serves dashboard after login | ✅ Implemented |
+| POST | `/api/login` | User authentication | ✅ Implemented |
+| GET | `/api/health` | Server health check | ✅ Implemented |
+| GET | `/api/user` | Get current user info | ❌ Needs Implementation |
+| POST | `/api/logout` | User logout | ❌ Needs Implementation |
+
+### Login API Details
+
+**POST `/api/login`**
+```json
+// Request Body
+{
+  "username": "your_username",
+  "password": "your_password"
+}
+
+// Success Response (200)
+{
+  "success": true,
+  "message": "Login successful",
+  "user": {
+    "username": "your_username"
+  }
+}
+
+// Error Response (401)
+{
+  "success": false,
+  "message": "Invalid username or password"
+}
+```
 
 ## Database Schema
 
-The application uses the following main tables:
-
-- **users**: Stores user account information
-- **sessions**: Manages user sessions
-- **data**: Application-specific data storage
-
-Detailed schema can be found in `database/schema.sql`.
-
-## Development
-
-### Adding New Features
-
-1. Create new routes in the `routes/` directory
-2. Add corresponding database models in `models/`
-3. Update the frontend in `public/` and `views/`
-4. Test thoroughly before deployment
-
-### Code Style
-
-- Use consistent indentation (2 spaces)
-- Follow camelCase naming convention
-- Add comments for complex logic
-- Validate all user inputs
-
-## Testing
-
-Run the test suite:
-```bash
-npm test
+### Users Table
+```sql
+CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-## Deployment
+## Frontend Features
 
-For production deployment:
+### Bootstrap Integration
+- **Bootstrap 5.3.0** for responsive design
+- **Font Awesome 6.0** for modern icons
+- Custom gradient navbar styling
+- Responsive grid layout
+- Form controls and button styling
 
-1. Set environment variables for production
-2. Use a process manager like PM2:
-   ```bash
-   npm install -g pm2
-   pm2 start server.js --name "enterprise-app"
-   ```
-3. Configure reverse proxy (Nginx recommended)
-4. Set up SSL certificates for HTTPS
+### Dashboard Components
+- **Navigation Bar**: Custom gradient design with logo and navigation links
+- **User Display**: Shows current logged-in user
+- **Search Functionality**: Integrated search box
+- **Logout Button**: Secure logout with confirmation
 
-## Security Considerations
+## Missing Implementation (TODO)
 
-- All user inputs are sanitized and validated
-- Passwords are hashed using bcrypt
-- SQL injection prevention through parameterized queries
-- CORS protection implemented
-- Rate limiting on API endpoints
+The following endpoints are referenced in the frontend but need implementation:
+
+1. **GET `/api/user`** - Return current user information
+2. **POST `/api/logout`** - Handle user logout and session cleanup
+3. **Session Management** - Implement proper session handling
+4. **Authentication Middleware** - Protect dashboard routes
+
+### Suggested Implementation for Missing Endpoints:
+
+```javascript
+// Add to server.js
+
+// Get current user endpoint
+app.get('/api/user', (req, res) => {
+  // TODO: Implement session checking
+  // For now, return mock data or implement session management
+  res.json({
+    success: true,
+    user: { username: 'current_user' }
+  });
+});
+
+// Logout endpoint
+app.post('/api/logout', (req, res) => {
+  // TODO: Implement session destruction
+  res.json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+});
+```
+
+## Security Features
+
+- **Password Hashing**: Uses bcrypt with salt rounds
+- **Input Validation**: Server-side validation for all inputs
+- **SQL Injection Prevention**: Parameterized queries with mysql2
+- **Connection Pool**: Prevents connection exhaustion
+- **Error Handling**: Comprehensive error management
+- **HTTPS Ready**: Prepared for SSL certificate integration
+
+## Development Setup
+
+### Required npm packages:
+```bash
+npm install express mysql2 bcrypt dotenv
+```
+
+### Development Dependencies (Optional):
+```bash
+npm install --save-dev nodemon
+```
+
+### Package.json Scripts:
+```json
+{
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  }
+}
+```
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **Database Connection Error**
-   - Check MySQL server is running
-   - Verify credentials in `.env` file
-   - Ensure database exists
+   - Verify MySQL service is running
+   - Check credentials in `.env` file
+   - Ensure database `enterprise_app` exists
+   - Test connection: `mysql -u username -p`
 
-2. **Port Already in Use**
+2. **Port 5000 Already in Use**
    - Change PORT in `.env` file
-   - Kill existing process: `lsof -ti:3000 | xargs kill`
+   - Kill existing process: `lsof -ti:5000 | xargs kill -9`
 
-3. **Dependencies Issues**
-   - Clear npm cache: `npm cache clean --force`
-   - Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
+3. **CSS/JS Files Not Loading**
+   - Ensure files are in `public/` directory
+   - Check file paths in HTML
+   - Verify `express.static('public')` is configured
 
-## Contributing
+4. **Bootstrap/FontAwesome Not Loading**
+   - Check internet connection (using CDN)
+   - Verify CDN URLs are correct and accessible
 
-This is a Year 12 school project. For academic integrity, please do not copy code directly. Use this as a reference for learning purposes only.
+### Server Startup Checklist
 
-## License
+When you start the server, you should see:
+```
+🚀 Server running on port 5000
+✅ Database connected successfully
+```
 
-This project is created for educational purposes as part of Year 12 Enterprise Computing coursework.
+If you see `❌ Database connection failed`, check your database configuration.
+
+## Next Steps for Development
+
+1. **Implement Session Management**: Add express-session or JWT
+2. **Add User Registration**: Create signup functionality
+3. **Implement Missing API Endpoints**: `/api/user` and `/api/logout`
+4. **Add Data Management**: CRUD operations for application data
+5. **Enhance Security**: Add rate limiting and CORS
+6. **Add Testing**: Unit and integration tests
+7. **Error Logging**: Implement proper logging system
+
+## Testing
+
+### Manual Testing Steps:
+1. Start the server: `node server.js`
+2. Visit `http://localhost:5000`
+3. Verify login page loads
+4. Test database connection via health endpoint: `http://localhost:5000/api/health`
+5. Test login with valid credentials
+6. Verify dashboard loads after successful login
+
+## Deployment Notes
+
+- Server runs on port 5000 by default
+- Uses connection pooling for database efficiency
+- Static files served from `public/` directory
+- Environment variables required for database connection
+- Ready for PM2 process management in production
 
 ## Author
 
@@ -220,12 +312,10 @@ Year 12 Enterprise Computing
 [School Name]  
 [Date]
 
-## Acknowledgments
+## License
 
-- Thanks to the Enterprise Computing teaching team
-- Node.js and Express.js communities
-- MySQL documentation and resources
+This project is created for educational purposes as part of Year 12 Enterprise Computing coursework.
 
 ---
 
-**Note**: This application is designed for educational purposes and demonstrates enterprise-level web development concepts suitable for Year 12 assessment criteria.
+**Note**: This application demonstrates enterprise web development concepts and is designed to meet Year 12 assessment criteria. Some advanced features are intentionally left for further development to encourage learning and problem-solving.

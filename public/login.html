@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Dark Theme</title>
+    <title>Login Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 min-h-screen flex items-center justify-center">
@@ -83,6 +83,13 @@
                 </a>
             </p>
         </div>
+        
+        <!-- Back to Home link -->
+        <div class="mt-4 text-center">
+            <a href="index.html" class="text-sm text-gray-400 hover:text-gray-300">
+                ← Back to Home
+            </a>
+        </div>
     </div>
 
     <script>
@@ -120,24 +127,25 @@
 
                 const data = await response.json();
 
-                if (data.success) {
+                if (response.ok && data.success) {
                     // Show success message
-                    successMessage.textContent = data.message;
+                    successMessage.textContent = `${data.message || 'Login successful!'} Redirecting to homepage...`;
                     successMessage.classList.remove('hidden');
                     
-                    // Optional: Clear form
+                    // Clear form
                     form.reset();
                     
-                    // Optional: Redirect after successful login
+                    // Log success
+                    console.log('Login successful for user:', data.user?.username || 'Unknown user');
+                    
+                    // Redirect to index.html after successful login
                     setTimeout(() => {
-                        console.log('Login successful for user:', data.user.username);
-                        // You can redirect to another page here
-                        // window.location.href = '/dashboard.html';
+                        window.location.href = 'index.html';
                     }, 1500);
                     
                 } else {
                     // Show error message
-                    errorMessage.textContent = data.message;
+                    errorMessage.textContent = data.message || 'Invalid username or password';
                     errorMessage.classList.remove('hidden');
                 }
 
@@ -152,10 +160,15 @@
             }
         });
 
+
+
         // Optional: Handle Enter key press
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === 'INPUT') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
             }
         });
     </script>

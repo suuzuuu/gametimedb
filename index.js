@@ -122,36 +122,32 @@ app.get('/api/games', async (req, res) => {
 
     // Validate pagination parameters
     const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 games per request
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
     const offset = (pageNum - 1) * limitNum;
 
     // Build WHERE clause conditions
     let whereConditions = [];
-    let queryParams = [];
+    let baseParams = []; // Base parameters for filtering
 
     if (search) {
       whereConditions.push('name LIKE ?');
-      queryParams.push(`%${search}%`);
+      baseParams.push(`%${search}%`);
     }
-
     if (minPrice) {
       whereConditions.push('price_usd >= ?');
-      queryParams.push(parseFloat(minPrice));
+      baseParams.push(parseFloat(minPrice));
     }
-
     if (maxPrice) {
       whereConditions.push('price_usd <= ?');
-      queryParams.push(parseFloat(maxPrice));
+      baseParams.push(parseFloat(maxPrice));
     }
-
     if (minHours) {
       whereConditions.push('hours_to_beat >= ?');
-      queryParams.push(parseFloat(minHours));
+      baseParams.push(parseFloat(minHours));
     }
-
     if (maxHours) {
       whereConditions.push('hours_to_beat <= ?');
-      queryParams.push(parseFloat(maxHours));
+      baseParams.push(parseFloat(maxHours));
     }
 
     // Build WHERE clause
@@ -164,12 +160,12 @@ app.get('/api/games', async (req, res) => {
     const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'name';
     const sortOrder = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-    // Get total count for pagination
+    // Get total count for pagination (use copy of baseParams)
     const countQuery = `SELECT COUNT(*) as total FROM steam_games ${whereClause}`;
-    const [countResult] = await pool.execute(countQuery, queryParams);
+    const [countResult] = await pool.execute(countQuery, [...baseParams]);
     const totalGames = countResult[0].total;
 
-    // Get games with pagination
+    // Get games with pagination (use baseParams + pagination params)
     const gamesQuery = `
       SELECT 
         id,
@@ -185,9 +181,10 @@ app.get('/api/games', async (req, res) => {
       ORDER BY ${sortColumn} ${sortOrder}
       LIMIT ? OFFSET ?
     `;
-
-    queryParams.push(limitNum, offset);
-    const [games] = await pool.execute(gamesQuery, queryParams);
+    
+    // Create separate params array for games query
+    const gamesParams = [...baseParams, limitNum, offset];
+    const [games] = await pool.execute(gamesQuery, gamesParams);
 
     // Calculate pagination info
     const totalPages = Math.ceil(totalGames / limitNum);
@@ -208,7 +205,6 @@ app.get('/api/games', async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Error fetching games:', error);
     res.status(500).json({

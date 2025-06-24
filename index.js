@@ -120,9 +120,9 @@ app.get('/api/games', async (req, res) => {
       limit = 20
     } = req.query;
 
-    // Validate pagination parameters
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+    // Validate pagination parameters - ensure they're proper integers
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 20));
     const offset = (pageNum - 1) * limitNum;
 
     // Build WHERE clause conditions
@@ -133,19 +133,19 @@ app.get('/api/games', async (req, res) => {
       whereConditions.push('name LIKE ?');
       baseParams.push(`%${search}%`);
     }
-    if (minPrice) {
+    if (minPrice !== undefined && minPrice !== '') {
       whereConditions.push('price_usd >= ?');
       baseParams.push(parseFloat(minPrice));
     }
-    if (maxPrice) {
+    if (maxPrice !== undefined && maxPrice !== '') {
       whereConditions.push('price_usd <= ?');
       baseParams.push(parseFloat(maxPrice));
     }
-    if (minHours) {
+    if (minHours !== undefined && minHours !== '') {
       whereConditions.push('hours_to_beat >= ?');
       baseParams.push(parseFloat(minHours));
     }
-    if (maxHours) {
+    if (maxHours !== undefined && maxHours !== '') {
       whereConditions.push('hours_to_beat <= ?');
       baseParams.push(parseFloat(maxHours));
     }
@@ -162,6 +162,11 @@ app.get('/api/games', async (req, res) => {
 
     // Get total count for pagination (use copy of baseParams)
     const countQuery = `SELECT COUNT(*) as total FROM steam_games ${whereClause}`;
+    console.log('COUNT QUERY DEBUG:');
+    console.log('Query:', countQuery);
+    console.log('Params:', [...baseParams]);
+    console.log('Params length:', baseParams.length);
+    
     const [countResult] = await pool.execute(countQuery, [...baseParams]);
     const totalGames = countResult[0].total;
 
@@ -182,8 +187,20 @@ app.get('/api/games', async (req, res) => {
       LIMIT ? OFFSET ?
     `;
     
-    // Create separate params array for games query
-    const gamesParams = [...baseParams, limitNum, offset];
+    // Create separate params array for games query - ensure integers for LIMIT/OFFSET
+    const gamesParams = [...baseParams, parseInt(limitNum), parseInt(offset)];
+    
+    // Debug logging
+    console.log('GAMES QUERY DEBUG:');
+    console.log('Query:', gamesQuery.replace(/\s+/g, ' ').trim());
+    console.log('baseParams:', baseParams);
+    console.log('baseParams length:', baseParams.length);
+    console.log('limitNum:', parseInt(limitNum), 'type:', typeof parseInt(limitNum));
+    console.log('offset:', parseInt(offset), 'type:', typeof parseInt(offset));
+    console.log('gamesParams:', gamesParams);
+    console.log('gamesParams length:', gamesParams.length);
+    console.log('Expected placeholders in query:', (gamesQuery.match(/\?/g) || []).length);
+    
     const [games] = await pool.execute(gamesQuery, gamesParams);
 
     // Calculate pagination info

@@ -103,6 +103,258 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// GAMES ENDPOINTS - Added for search functionality
+
+// Get all games with optional filtering and pagination
+app.get('/api/games', async (req, res) => {
+  try {
+    const { 
+      search, 
+      minPrice, 
+      maxPrice, 
+      minHours, 
+      maxHours,
+      sortBy = 'name',
+      order = 'ASC',
+      page = 1,
+      limit = 20
+    } = req.query;
+
+    // Validate pagination parameters
+    const pageNum = Math.max(1, parseInt(page));
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 games per request
+    const offset = (pageNum - 1) * limitNum;
+
+    // Build WHERE clause conditions
+    let whereConditions = [];
+    let queryParams = [];
+
+    if (search) {
+      whereConditions.push('name LIKE ?');
+      queryParams.push(`%${search}%`);
+    }
+
+    if (minPrice) {
+      whereConditions.push('price_usd >= ?');
+      queryParams.push(parseFloat(minPrice));
+    }
+
+    if (maxPrice) {
+      whereConditions.push('price_usd <= ?');
+      queryParams.push(parseFloat(maxPrice));
+    }
+
+    if (minHours) {
+      whereConditions.push('hours_to_beat >= ?');
+      queryParams.push(parseFloat(minHours));
+    }
+
+    if (maxHours) {
+      whereConditions.push('hours_to_beat <= ?');
+      queryParams.push(parseFloat(maxHours));
+    }
+
+    // Build WHERE clause
+    const whereClause = whereConditions.length > 0 
+      ? `WHERE ${whereConditions.join(' AND ')}` 
+      : '';
+
+    // Validate sort column
+    const validSortColumns = ['name', 'price_usd', 'hours_to_beat', 'cost_per_hour', 'created_at'];
+    const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'name';
+    const sortOrder = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    // Get total count for pagination
+    const countQuery = `SELECT COUNT(*) as total FROM steam_games ${whereClause}`;
+    const [countResult] = await pool.execute(countQuery, queryParams);
+    const totalGames = countResult[0].total;
+
+    // Get games with pagination
+    const gamesQuery = `
+      SELECT 
+        id,
+        name,
+        steam_appid,
+        price_usd,
+        hours_to_beat,
+        cost_per_hour,
+        created_at,
+        updated_at
+      FROM steam_games 
+      ${whereClause}
+      ORDER BY ${sortColumn} ${sortOrder}
+      LIMIT ? OFFSET ?
+    `;
+
+    queryParams.push(limitNum, offset);
+    const [games] = await pool.execute(gamesQuery, queryParams);
+
+    // Calculate pagination info
+    const totalPages = Math.ceil(totalGames / limitNum);
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+
+    res.json({
+      success: true,
+      data: {
+        games,
+        pagination: {
+          currentPage: pageNum,
+          totalPages,
+          totalGames,
+          gamesPerPage: limitNum,
+          hasNextPage,
+          hasPrevPage
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching games:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching games'
+    });
+  }
+});
+
+// Get a specific game by ID
+app.get('/api/games/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ID
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid game ID'
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT 
+        id,
+        name,
+        steam_appid,
+        price_usd,
+        hours_to_beat,
+        cost_per_hour,
+        created_at,
+        updated_at
+      FROM steam_games 
+      WHERE id = ?`,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Game not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        game: rows[0]
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching game:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching game'
+    });
+  }
+});
+
+// Get games by Steam App ID
+app.get('/api/games/steam/:appid', async (req, res) => {
+  try {
+    const { appid } = req.params;
+
+    // Validate Steam App ID
+    if (!appid || isNaN(appid)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid Steam App ID'
+      });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT 
+        id,
+        name,
+        steam_appid,
+        price_usd,
+        hours_to_beat,
+        cost_per_hour,
+        created_at,
+        updated_at
+      FROM steam_games 
+      WHERE steam_appid = ?`,
+      [appid]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Game not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        game: rows[0]
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching game:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching game'
+    });
+  }
+});
+
+// Get games statistics
+app.get('/api/games/stats', async (req, res) => {
+  try {
+    const [stats] = await pool.execute(`
+      SELECT 
+        COUNT(*) as total_games,
+        AVG(price_usd) as avg_price,
+        MIN(price_usd) as min_price,
+        MAX(price_usd) as max_price,
+        AVG(hours_to_beat) as avg_hours,
+        MIN(hours_to_beat) as min_hours,
+        MAX(hours_to_beat) as max_hours,
+        AVG(cost_per_hour) as avg_cost_per_hour
+      FROM steam_games
+      WHERE price_usd IS NOT NULL 
+        AND hours_to_beat IS NOT NULL 
+        AND cost_per_hour IS NOT NULL
+    `);
+
+    res.json({
+      success: true,
+      data: {
+        statistics: stats[0]
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching game statistics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching game statistics'
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({

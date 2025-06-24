@@ -190,11 +190,11 @@ app.get('/api/games', async (req, res) => {
     const totalGames = countResult[0].total;
     console.log('Count result:', totalGames);
 
-    // Get games with pagination
-    const gamesQuery = `SELECT id, name, steam_appid, price_usd, hours_to_beat, cost_per_hour, created_at, updated_at FROM steam_games ${whereClause} ORDER BY ${sortColumn} ${sortOrder} LIMIT ? OFFSET ?`;
+    // Get games with pagination - try without parameterized LIMIT/OFFSET first
+    const gamesQuery = `SELECT id, name, steam_appid, price_usd, hours_to_beat, cost_per_hour, created_at, updated_at FROM steam_games ${whereClause} ORDER BY ${sortColumn} ${sortOrder} LIMIT ${limitNum} OFFSET ${offset}`;
     
-    // Create separate params array for games query
-    const gamesParams = [...baseParams, limitNum, offset];
+    // Use only the baseParams (no LIMIT/OFFSET params since they're now in the query string)
+    const gamesParams = [...baseParams];
     
     console.log('GAMES QUERY:');
     console.log('Query:', gamesQuery);
@@ -202,7 +202,7 @@ app.get('/api/games', async (req, res) => {
     console.log('Params length:', gamesParams.length);
     console.log('Placeholders count:', (gamesQuery.match(/\?/g) || []).length);
     
-    // Let's try a simple test first
+    // Validate parameter count
     if (gamesParams.length !== (gamesQuery.match(/\?/g) || []).length) {
       throw new Error(`Parameter count mismatch: ${gamesParams.length} params vs ${(gamesQuery.match(/\?/g) || []).length} placeholders`);
     }

@@ -149,6 +149,24 @@
       box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
 
+    .login-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 0.5rem 1.5rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+
     .logout-btn {
       background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
       border: none;
@@ -196,10 +214,10 @@
           <li class="nav-item"><a class="nav-link" href="#" onclick="showGames()">Browse Games</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
-          <li class="nav-item ms-3">
-            <button class="btn logout-btn" onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+          <li class="nav-item ms-3" id="auth-section">
+            <a href="login.html" class="btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </a>
           </li>
         </ul>
       </div>
@@ -237,7 +255,7 @@
         <h2 class="mb-4 text-center" style="color: #555;">Steam Games Database</h2>
         
         <!-- Filters -->
-        <div class="filter-section">
+        <div id="filter-section" class="filter-section" style="display: none;">
           <div class="row">
             <div class="col-md-6">
               <input type="text" id="search-input" class="form-control mb-3" placeholder="Search games...">
@@ -285,6 +303,9 @@
               <button class="btn btn-secondary ms-2" onclick="clearFilters()">
                 <i class="fas fa-times"></i> Clear Filters
               </button>
+              <button class="btn btn-info ms-2" onclick="toggleFilters()">
+                <i class="fas fa-sliders-h"></i> Toggle Advanced Filters
+              </button>
             </div>
           </div>
         </div>
@@ -309,11 +330,40 @@
     let currentPage = 1;
     let totalPages = 1;
     let currentFilters = {};
+    let isLoggedIn = false;
+
+    // Check authentication status
+    function checkAuth() {
+      // Check if we're on the dashboard route (simple check)
+      const currentPath = window.location.pathname;
+      isLoggedIn = currentPath.includes('/dashboard') || currentPath === '/dashboard';
+      
+      // Update UI based on auth status
+      updateAuthUI();
+    }
+
+    // Update authentication UI
+    function updateAuthUI() {
+      const authSection = document.getElementById('auth-section');
+      
+      if (isLoggedIn) {
+        authSection.innerHTML = `
+          <button class="btn logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        `;
+      } else {
+        authSection.innerHTML = `
+          <a href="login.html" class="btn login-btn">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
+        `;
+      }
+    }
 
     // Check if user is logged in (basic check)
     document.addEventListener('DOMContentLoaded', function() {
-      // In a real app, you'd check for JWT token or session
-      console.log('Dashboard loaded');
+      checkAuth();
       
       // Add event listeners
       document.getElementById('main-search').addEventListener('keypress', function(e) {
@@ -322,25 +372,43 @@
         }
       });
 
-      document.getElementById('search-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          loadGames();
-        }
-      });
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            loadGames();
+          }
+        });
+      }
     });
 
     // Search games from main search
     function searchGames() {
       const searchTerm = document.getElementById('main-search').value.trim();
       if (searchTerm) {
-        document.getElementById('search-input').value = searchTerm;
+        // Clear existing search input and show games section
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.value = searchTerm;
+        }
         showGames();
+        
+        // Hide filters initially after search
+        const filterSection = document.getElementById('filter-section');
+        if (filterSection) {
+          filterSection.style.display = 'none';
+        }
+        
         loadGames();
       }
     }
 
     // Show statistics section
     async function showStats() {
+      if (!isLoggedIn) {
+        alert('Please log in to view statistics');
+        return;
+      }
       hideAllSections();
       document.getElementById('stats-section').style.display = 'block';
       await loadStats();
@@ -350,7 +418,25 @@
     function showGames() {
       hideAllSections();
       document.getElementById('games-section').style.display = 'block';
+      
+      // Show filters when browsing games (not after search)
+      const filterSection = document.getElementById('filter-section');
+      const searchInput = document.getElementById('search-input');
+      if (filterSection && searchInput && !searchInput.value) {
+        filterSection.style.display = 'block';
+      }
+      
       loadGames();
+    }
+
+    // Toggle filters visibility
+    function toggleFilters() {
+      const filterSection = document.getElementById('filter-section');
+      if (filterSection.style.display === 'none') {
+        filterSection.style.display = 'block';
+      } else {
+        filterSection.style.display = 'none';
+      }
     }
 
     // Hide all sections
@@ -412,14 +498,22 @@
 
       try {
         // Get filter values
+        const searchInput = document.getElementById('search-input');
+        const minPriceInput = document.getElementById('min-price');
+        const maxPriceInput = document.getElementById('max-price');
+        const minHoursInput = document.getElementById('min-hours');
+        const maxHoursInput = document.getElementById('max-hours');
+        const sortByInput = document.getElementById('sort-by');
+        const sortOrderInput = document.getElementById('sort-order');
+
         const filters = {
-          search: document.getElementById('search-input').value,
-          minPrice: document.getElementById('min-price').value,
-          maxPrice: document.getElementById('max-price').value,
-          minHours: document.getElementById('min-hours').value,
-          maxHours: document.getElementById('max-hours').value,
-          sortBy: document.getElementById('sort-by').value,
-          order: document.getElementById('sort-order').value,
+          search: searchInput ? searchInput.value : '',
+          minPrice: minPriceInput ? minPriceInput.value : '',
+          maxPrice: maxPriceInput ? maxPriceInput.value : '',
+          minHours: minHoursInput ? minHoursInput.value : '',
+          maxHours: maxHoursInput ? maxHoursInput.value : '',
+          sortBy: sortByInput ? sortByInput.value : 'name',
+          order: sortOrderInput ? sortOrderInput.value : 'ASC',
           page: currentPage
         };
 
@@ -529,13 +623,22 @@
 
     // Clear filters
     function clearFilters() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('min-price').value = '';
-      document.getElementById('max-price').value = '';
-      document.getElementById('min-hours').value = '';
-      document.getElementById('max-hours').value = '';
-      document.getElementById('sort-by').value = 'name';
-      document.getElementById('sort-order').value = 'ASC';
+      const searchInput = document.getElementById('search-input');
+      const minPriceInput = document.getElementById('min-price');
+      const maxPriceInput = document.getElementById('max-price');
+      const minHoursInput = document.getElementById('min-hours');
+      const maxHoursInput = document.getElementById('max-hours');
+      const sortByInput = document.getElementById('sort-by');
+      const sortOrderInput = document.getElementById('sort-order');
+
+      if (searchInput) searchInput.value = '';
+      if (minPriceInput) minPriceInput.value = '';
+      if (maxPriceInput) maxPriceInput.value = '';
+      if (minHoursInput) minHoursInput.value = '';
+      if (maxHoursInput) maxHoursInput.value = '';
+      if (sortByInput) sortByInput.value = 'name';
+      if (sortOrderInput) sortOrderInput.value = 'ASC';
+      
       currentPage = 1;
       loadGames();
     }
@@ -543,7 +646,11 @@
     // Logout function
     function logout() {
       if (confirm('Are you sure you want to logout?')) {
-        // In a real app, you'd clear session/token
+        isLoggedIn = false;
+        updateAuthUI();
+        hideAllSections();
+        document.getElementById('welcome-section').style.display = 'block';
+        // In a real app, you'd also clear session/token and redirect
         window.location.href = '/';
       }
     }

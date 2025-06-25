@@ -107,6 +107,9 @@ app.post('/api/login', async (req, res) => {
 
 // Get all games with optional filtering and pagination
 app.get('/api/games', async (req, res) => {
+  console.log('=== API GAMES REQUEST START ===');
+  console.log('Query params:', req.query);
+  
   try {
     const { 
       search, 
@@ -120,79 +123,98 @@ app.get('/api/games', async (req, res) => {
       limit = 20
     } = req.query;
 
-    // Validate pagination parameters
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 games per request
+    console.log('Destructured params:', { search, minPrice, maxPrice, minHours, maxHours, sortBy, order, page, limit });
+
+    // Validate pagination parameters - ensure they're proper integers
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit) || 20));
     const offset = (pageNum - 1) * limitNum;
+
+    console.log('Calculated pagination:', { pageNum, limitNum, offset });
 
     // Build WHERE clause conditions
     let whereConditions = [];
-    let queryParams = [];
+    let baseParams = []; // Base parameters for filtering
+
+    console.log('Building WHERE conditions...');
 
     if (search) {
+      console.log('Adding search condition:', search);
       whereConditions.push('name LIKE ?');
-      queryParams.push(`%${search}%`);
+      baseParams.push(`%${search}%`);
     }
-
-    if (minPrice) {
+    if (minPrice !== undefined && minPrice !== '') {
+      console.log('Adding minPrice condition:', minPrice);
       whereConditions.push('price_usd >= ?');
-      queryParams.push(parseFloat(minPrice));
+      baseParams.push(parseFloat(minPrice));
     }
-
-    if (maxPrice) {
+    if (maxPrice !== undefined && maxPrice !== '') {
+      console.log('Adding maxPrice condition:', maxPrice);
       whereConditions.push('price_usd <= ?');
-      queryParams.push(parseFloat(maxPrice));
+      baseParams.push(parseFloat(maxPrice));
     }
-
-    if (minHours) {
+    if (minHours !== undefined && minHours !== '') {
+      console.log('Adding minHours condition:', minHours);
       whereConditions.push('hours_to_beat >= ?');
-      queryParams.push(parseFloat(minHours));
+      baseParams.push(parseFloat(minHours));
+    }
+    if (maxHours !== undefined && maxHours !== '') {
+      console.log('Adding maxHours condition:', maxHours);
+      whereConditions.push('hours_to_beat <= ?');
+      baseParams.push(parseFloat(maxHours));
     }
 
-    if (maxHours) {
-      whereConditions.push('hours_to_beat <= ?');
-      queryParams.push(parseFloat(maxHours));
-    }
+    console.log('Final whereConditions:', whereConditions);
+    console.log('Final baseParams:', baseParams);
 
     // Build WHERE clause
     const whereClause = whereConditions.length > 0 
       ? `WHERE ${whereConditions.join(' AND ')}` 
       : '';
 
+    console.log('Built whereClause:', whereClause);
+
     // Validate sort column
     const validSortColumns = ['name', 'price_usd', 'hours_to_beat', 'cost_per_hour', 'created_at'];
     const sortColumn = validSortColumns.includes(sortBy) ? sortBy : 'name';
     const sortOrder = order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-    // Get total count for pagination
+    // Get total count for pagination (use copy of baseParams)
     const countQuery = `SELECT COUNT(*) as total FROM steam_games ${whereClause}`;
-    const [countResult] = await pool.execute(countQuery, queryParams);
+    console.log('COUNT QUERY:');
+    console.log('Query:', countQuery);
+    console.log('Params:', [...baseParams]);
+    console.log('Params length:', baseParams.length);
+    
+    const [countResult] = await pool.execute(countQuery, [...baseParams]);
     const totalGames = countResult[0].total;
+    console.log('Count result:', totalGames);
 
-    // Get games with pagination
-    const gamesQuery = `
-      SELECT 
-        id,
-        name,
-        steam_appid,
-        price_usd,
-        hours_to_beat,
-        cost_per_hour,
-        created_at,
-        updated_at
-      FROM steam_games 
-      ${whereClause}
-      ORDER BY ${sortColumn} ${sortOrder}
-      LIMIT ? OFFSET ?
-    `;
-
-    queryParams.push(limitNum, offset);
-    const [games] = await pool.execute(gamesQuery, queryParams);
+    // Get games with pagination - try without parameterized LIMIT/OFFSET first
+    const gamesQuery = `SELECT id, name, steam_appid, price_usd, hours_to_beat, cost_per_hour, created_at, updated_at FROM steam_games ${whereClause} ORDER BY ${sortColumn} ${sortOrder} LIMIT ${limitNum} OFFSET ${offset}`;
+    
+    // Use only the baseParams (no LIMIT/OFFSET params since they're now in the query string)
+    const gamesParams = [...baseParams];
+    
+    console.log('GAMES QUERY:');
+    console.log('Query:', gamesQuery);
+    console.log('Params:', gamesParams);
+    console.log('Params length:', gamesParams.length);
+    console.log('Placeholders count:', (gamesQuery.match(/\?/g) || []).length);
+    
+    // Validate parameter count
+    if (gamesParams.length !== (gamesQuery.match(/\?/g) || []).length) {
+      throw new Error(`Parameter count mismatch: ${gamesParams.length} params vs ${(gamesQuery.match(/\?/g) || []).length} placeholders`);
+    }
+    
+    const [games] = await pool.execute(gamesQuery, gamesParams);
 
     // Calculate pagination info
     const totalPages = Math.ceil(totalGames / limitNum);
     const hasNextPage = pageNum < totalPages;
     const hasPrevPage = pageNum > 1;
+
+    console.log('Success! Returning', games.length, 'games');
 
     res.json({
       success: true,
@@ -208,7 +230,6 @@ app.get('/api/games', async (req, res) => {
         }
       }
     });
-
   } catch (error) {
     console.error('Error fetching games:', error);
     res.status(500).json({
@@ -216,6 +237,8 @@ app.get('/api/games', async (req, res) => {
       message: 'Error fetching games'
     });
   }
+  
+  console.log('=== API GAMES REQUEST END ===');
 });
 
 // Get a specific game by ID

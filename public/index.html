@@ -215,9 +215,9 @@
           <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
           <li class="nav-item ms-3" id="auth-section">
-            <a href="login.html" class="btn login-btn">
-              <i class="fas fa-sign-in-alt"></i> Login
-            </a>
+            <button id="auth-button" class="btn btn-primary">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
           </li>
         </ul>
       </div>
@@ -654,6 +654,31 @@
         window.location.href = '/';
       }
     }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+      const authButton = document.getElementById('auth-button');
+
+      // Simulate checking authentication status (replace with actual logic)
+      const isSignedIn = Boolean(localStorage.getItem('authToken')); // Example: Check for a token
+
+      if (isSignedIn) {
+        // User is signed in, show "Logout" button
+        authButton.textContent = 'Logout';
+        authButton.classList.remove('btn-primary');
+        authButton.classList.add('btn-danger');
+        authButton.addEventListener('click', function () {
+          // Logout logic (clear token, redirect, etc.)
+          localStorage.removeItem('authToken');
+          window.location.reload(); // Reload page after logout
+        });
+      } else {
+        // User is not signed in, show "Sign In" button
+        authButton.addEventListener('click', function () {
+          // Redirect to sign-in page
+          window.location.href = '/signin';
+        });
+      }
+    });
   </script>
 </body>
 </html>

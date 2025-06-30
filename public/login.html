@@ -128,6 +128,13 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    // Store user data in localStorage
+                    localStorage.setItem('userId', data.user.id);
+                    localStorage.setItem('username', data.user.username);
+                    localStorage.setItem('email', data.user.email);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
                     // Show success message
                     successMessage.textContent = `${data.message || 'Login successful!'} Redirecting to homepage...`;
                     successMessage.classList.remove('hidden');
@@ -137,6 +144,11 @@
                     
                     // Log success
                     console.log('Login successful for user:', data.user?.username || 'Unknown user');
+                    console.log('User data stored in localStorage:', {
+                        userId: data.user.id,
+                        username: data.user.username,
+                        email: data.user.email
+                    });
                     
                     // Redirect to index.html after successful login
                     setTimeout(() => {
@@ -159,8 +171,6 @@
                 loginButton.disabled = false;
             }
         });
-
-
 
         // Optional: Handle Enter key press
         document.addEventListener('keydown', (e) => {

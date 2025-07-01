@@ -333,12 +333,11 @@
 
     // Check authentication status on page load
     function checkAuth() {
-      // Check localStorage for login status
-      const loginStatus = localStorage.getItem('login');
-      const authToken = localStorage.getItem('authToken');
+      // Check localStorage for isLoggedin status
+      const loginStatus = localStorage.getItem('isLoggedin');
       
-      // User is logged in if either 'login' is 'true' or 'authToken' exists
-      isLoggedIn = loginStatus === 'true' || Boolean(authToken);
+      // User is logged in if 'isLoggedin' is 'true'
+      isLoggedIn = loginStatus === 'true';
       
       // Update UI based on auth status
       updateAuthUI();
@@ -368,9 +367,8 @@
     // Sign out function
     function signOut() {
       if (confirm('Are you sure you want to sign out?')) {
-        // Clear all authentication data
-        localStorage.removeItem('login');
-        localStorage.removeItem('authToken');
+        // Clear authentication data
+        localStorage.removeItem('isLoggedin');
         
         // Update global state and UI
         isLoggedIn = false;

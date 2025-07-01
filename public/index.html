@@ -215,8 +215,8 @@
           <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
           <li class="nav-item ms-3" id="auth-section">
-            <button id="auth-button" class="btn btn-primary">
-              <i class="fas fa-sign-in-alt"></i> Sign In
+            <button id="auth-button" class="btn login-btn">
+              <i class="fas fa-sign-in-alt"></i> Sign in
             </button>
           </li>
         </ul>
@@ -332,11 +332,14 @@
     let currentFilters = {};
     let isLoggedIn = false;
 
-    // Check authentication status
+    // Check authentication status on page load
     function checkAuth() {
-      // Check if we're on the dashboard route (simple check)
-      const currentPath = window.location.pathname;
-      isLoggedIn = currentPath.includes('/dashboard') || currentPath === '/dashboard';
+      // Check localStorage for login status
+      const loginStatus = localStorage.getItem('login');
+      const authToken = localStorage.getItem('authToken');
+      
+      // User is logged in if either 'login' is 'true' or 'authToken' exists
+      isLoggedIn = loginStatus === 'true' || Boolean(authToken);
       
       // Update UI based on auth status
       updateAuthUI();
@@ -344,24 +347,54 @@
 
     // Update authentication UI
     function updateAuthUI() {
-      const authSection = document.getElementById('auth-section');
+      const authButton = document.getElementById('auth-button');
       
       if (isLoggedIn) {
-        authSection.innerHTML = `
-          <button class="btn logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
-        `;
+        // User is signed in, show "Sign Out" button
+        authButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
+        authButton.className = 'btn logout-btn';
+        authButton.onclick = signOut;
       } else {
-        authSection.innerHTML = `
-          <a href="login.html" class="btn login-btn">
-            <i class="fas fa-sign-in-alt"></i> Login
-          </a>
-        `;
+        // User is not signed in, show "Sign In" button
+        authButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        authButton.className = 'btn login-btn';
+        authButton.onclick = signIn;
       }
     }
 
-    // Check if user is logged in (basic check)
+    // Sign in function
+    function signIn() {
+      // Simulate sign in process
+      localStorage.setItem('login', 'true');
+      localStorage.setItem('authToken', 'sample-auth-token-' + Date.now());
+      
+      // Update global state and UI
+      isLoggedIn = true;
+      updateAuthUI();
+      
+      alert('Successfully signed in!');
+    }
+
+    // Sign out function
+    function signOut() {
+      if (confirm('Are you sure you want to sign out?')) {
+        // Clear all authentication data
+        localStorage.removeItem('login');
+        localStorage.removeItem('authToken');
+        
+        // Update global state and UI
+        isLoggedIn = false;
+        updateAuthUI();
+        
+        // Reset to welcome section
+        hideAllSections();
+        document.getElementById('welcome-section').style.display = 'block';
+        
+        alert('Successfully signed out!');
+      }
+    }
+
+    // Initialize authentication on page load
     document.addEventListener('DOMContentLoaded', function() {
       checkAuth();
       
@@ -406,7 +439,7 @@
     // Show statistics section
     async function showStats() {
       if (!isLoggedIn) {
-        alert('Please log in to view statistics');
+        alert('Please sign in to view statistics');
         return;
       }
       hideAllSections();
@@ -642,43 +675,6 @@
       currentPage = 1;
       loadGames();
     }
-
-    // Logout function
-    function logout() {
-      if (confirm('Are you sure you want to logout?')) {
-        isLoggedIn = false;
-        updateAuthUI();
-        hideAllSections();
-        document.getElementById('welcome-section').style.display = 'block';
-        // In a real app, you'd also clear session/token and redirect
-        window.location.href = '/';
-      }
-    }
-    
-    document.addEventListener('DOMContentLoaded', function () {
-      const authButton = document.getElementById('auth-button');
-
-      // Simulate checking authentication status (replace with actual logic)
-      const isSignedIn = Boolean(localStorage.getItem('authToken')); // Example: Check for a token
-
-      if (isSignedIn) {
-        // User is signed in, show "Logout" button
-        authButton.textContent = 'Logout';
-        authButton.classList.remove('btn-primary');
-        authButton.classList.add('btn-danger');
-        authButton.addEventListener('click', function () {
-          // Logout logic (clear token, redirect, etc.)
-          localStorage.removeItem('authToken');
-          window.location.reload(); // Reload page after logout
-        });
-      } else {
-        // User is not signed in, show "Sign In" button
-        authButton.addEventListener('click', function () {
-          // Redirect to sign-in page
-          window.location.href = '/signin';
-        });
-      }
-    });
   </script>
 </body>
 </html>

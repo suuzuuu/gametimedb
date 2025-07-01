@@ -403,6 +403,16 @@
       }
     });
 
+    // Also check when the full page loads
+    window.addEventListener('load', function() {
+      checkAuth();
+    });
+
+    // Check auth when returning to the page (in case of browser back/forward)
+    window.addEventListener('pageshow', function(event) {
+      checkAuth();
+    });
+
     // Search games from main search
     function searchGames() {
       const searchTerm = document.getElementById('main-search').value.trim();

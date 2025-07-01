@@ -8,6 +8,9 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const STEAM_API_BASE_URL = process.env.STEAM_API_BASE_URL
+const STEAM_API_KEY = process.env.STEAM_API_KEY
+const STEAM_ID = process.env.STEAM_ID
 
 // Middleware
 app.use(express.json());
@@ -23,6 +26,8 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+
 
 // Test database connection
 async function testConnection() {

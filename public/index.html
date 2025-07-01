@@ -296,7 +296,7 @@
           
           <div class="row mt-3">
             <div class="col-12 text-center">
-              <button class="btn btn-primary" onclick="load Genes()">
+              <button class="btn btn-primary" onclick="loadGames()">
                 <i class="fas fa-filter"></i> Apply Filters
               </button>
               <button class="btn btn-secondary ms-2" onclick="clearFilters()">
@@ -334,9 +334,9 @@
     // Check authentication status on page load
     function checkAuth() {
       // Check localStorage for isLoggedin status (case-sensitive)
-      const loginStatus = localStorage.getItem('isLoggedin');
+      const loginStatus = localStorage.getItem('isLoggedIn');
       
-      // User is logged in if 'isLoggedin' is exactly 'true'
+      // User is logged in if 'isLoggedin' is the string 'true' (since localStorage stores values as strings)
       isLoggedIn = loginStatus === 'true';
       
       // Update UI based on auth status
@@ -368,7 +368,7 @@
     function signOut() {
       if (confirm('Are you sure you want to sign out?')) {
         // Clear authentication data
-        localStorage.removeItem('isLoggedin');
+        localStorage.removeItem('isLoggedIn');
         
         // Update global state and UI
         isLoggedIn = false;

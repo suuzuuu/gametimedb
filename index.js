@@ -2,6 +2,8 @@ const path = require('path');
 const express = require('express');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
+
 require('dotenv').config();
 
 const app = express();
@@ -340,6 +342,38 @@ app.get('/api/games/steam/:appid', async (req, res) => {
       success: false,
       message: 'Error fetching game'
     });
+  }
+});
+
+// Route to fetch owned games
+app.get('/api/owned-games', async (req, res, next) => {
+  try {
+    const response = await axios.get(`${STEAM_API_BASE_URL}/IPlayerService/GetOwnedGames/v0001/`, {
+      params: {
+        key: STEAM_API_KEY,
+        steamid: STEAM_ID,
+        include_appinfo: 1, // Include game details like name
+        format: 'json' // Ensure JSON response
+      }
+    });
+
+    // Check if the response contains games
+    const data = response.data;
+    if (data.response && data.response.games) {
+      res.json({
+        success: true,
+        games: data.response.games,
+        game_count: data.response.game_count
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'No games found or user profile is private'
+      });
+    }
+  } catch (error) {
+    // Pass errors to error-handling middleware
+    next(error);
   }
 });
 

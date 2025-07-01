@@ -366,7 +366,6 @@
 
     // Sign out function
     function signOut() {
-      if (confirm('Are you sure you want to sign out?')) {
         // Clear authentication data
         localStorage.removeItem('isLoggedIn');
         
@@ -376,10 +375,7 @@
         
         // Reset to welcome section
         hideAllSections();
-        document.getElementById('welcome-section').style.display = 'block';
-        
-        alert('Successfully signed out!');
-      }
+        document.getElementById('welcome-section').style.display = 'block';      
     }
 
     // Initialize authentication on page load

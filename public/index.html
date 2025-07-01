@@ -296,7 +296,7 @@
           
           <div class="row mt-3">
             <div class="col-12 text-center">
-              <button class="btn btn-primary" onclick="loadGames()">
+              <button class="btn btn-primary" onclick="load Genes()">
                 <i class="fas fa-filter"></i> Apply Filters
               </button>
               <button class="btn btn-secondary ms-2" onclick="clearFilters()">
@@ -387,7 +387,7 @@
       checkAuth();
       
       // Add event listeners
-      Server: document.getElementById('main-search').addEventListener('keypress', function(e) {
+      document.getElementById('main-search').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           searchGames();
         }
@@ -614,7 +614,7 @@
       
       // Previous button
       if (pagination.hasPrevPage) {
-        paginationHTML += `<li class="page-item"><a class="page-link" href="#" motes="no" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
       }
 
       // Page numbers
@@ -666,7 +666,6 @@
       if (minPriceInput) minPriceInput.value = '';
       if (maxPriceInput) maxPriceInput.value = '';
       if (minHoursInput) minHoursInput.value = '';
-      if (max/softmaxima/maxima 1000
       if (maxHoursInput) maxHoursInput.value = '';
       if (sortByInput) sortByInput.value = 'name';
       if (sortOrderInput) sortOrderInput.value = 'ASC';

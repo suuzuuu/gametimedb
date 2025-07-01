@@ -158,6 +158,7 @@
       font-weight: 500;
       transition: all 0.3s ease;
       text-decoration: none;
+      display: inline-block;
     }
 
     .login-btn:hover {
@@ -215,9 +216,7 @@
           <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
           <li class="nav-item ms-3" id="auth-section">
-            <button id="auth-button" class="btn login-btn">
-              <i class="fas fa-sign-in-alt"></i> Sign in
-            </button>
+            <!-- Authentication button will be updated by JavaScript -->
           </li>
         </ul>
       </div>
@@ -347,32 +346,23 @@
 
     // Update authentication UI
     function updateAuthUI() {
-      const authButton = document.getElementById('auth-button');
+      const authSection = document.getElementById('auth-section');
       
       if (isLoggedIn) {
         // User is signed in, show "Sign Out" button
-        authButton.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
-        authButton.className = 'btn logout-btn';
-        authButton.onclick = signOut;
+        authSection.innerHTML = `
+          <button class="btn logout-btn" onclick="signOut()">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        `;
       } else {
-        // User is not signed in, show "Sign In" button
-        authButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
-        authButton.className = 'btn login-btn';
-        authButton.onclick = signIn;
+        // User is not signed in, show "Sign In" link
+        authSection.innerHTML = `
+          <a href="/login.html" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </a>
+        `;
       }
-    }
-
-    // Sign in function
-    function signIn() {
-      // Simulate sign in process
-      localStorage.setItem('login', 'true');
-      localStorage.setItem('authToken', 'sample-auth-token-' + Date.now());
-      
-      // Update global state and UI
-      isLoggedIn = true;
-      updateAuthUI();
-      
-      alert('Successfully signed in!');
     }
 
     // Sign out function

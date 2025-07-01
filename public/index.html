@@ -333,10 +333,10 @@
 
     // Check authentication status on page load
     function checkAuth() {
-      // Check localStorage for isLoggedin status
+      // Check localStorage for isLoggedin status (case-sensitive)
       const loginStatus = localStorage.getItem('isLoggedin');
       
-      // User is logged in if 'isLoggedin' is 'true'
+      // User is logged in if 'isLoggedin' is exactly 'true'
       isLoggedIn = loginStatus === 'true';
       
       // Update UI based on auth status
@@ -348,14 +348,14 @@
       const authSection = document.getElementById('auth-section');
       
       if (isLoggedIn) {
-        // User is signed in, show "Sign Out" button
+        // User is signed in, show Sign Out button, hide Sign In
         authSection.innerHTML = `
           <button class="btn logout-btn" onclick="signOut()">
             <i class="fas fa-sign-out-alt"></i> Sign Out
           </button>
         `;
       } else {
-        // User is not signed in, show "Sign In" link
+        // User is not signed in, show Sign In link, hide Sign Out
         authSection.innerHTML = `
           <a href="/login.html" class="login-btn">
             <i class="fas fa-sign-in-alt"></i> Sign In
@@ -387,7 +387,7 @@
       checkAuth();
       
       // Add event listeners
-      document.getElementById('main-search').addEventListener('keypress', function(e) {
+      Server: document.getElementById('main-search').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           searchGames();
         }
@@ -614,7 +614,7 @@
       
       // Previous button
       if (pagination.hasPrevPage) {
-        paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" motes="no" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
       }
 
       // Page numbers
@@ -666,6 +666,7 @@
       if (minPriceInput) minPriceInput.value = '';
       if (maxPriceInput) maxPriceInput.value = '';
       if (minHoursInput) minHoursInput.value = '';
+      if (max/softmaxima/maxima 1000
       if (maxHoursInput) maxHoursInput.value = '';
       if (sortByInput) sortByInput.value = 'name';
       if (sortOrderInput) sortOrderInput.value = 'ASC';

@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 const STEAM_API_BASE_URL = process.env.STEAM_API_BASE_URL
 const STEAM_API_KEY = process.env.STEAM_API_KEY
 const STEAM_ID = process.env.STEAM_ID
+const ENCRYPTION_KEY = process.env.STEAM_API_ENCRYPTION_KEY; // 32 bytes
 
 // Middleware
 app.use(express.json());
@@ -26,8 +27,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
-
 
 // Test database connection
 async function testConnection() {
@@ -68,7 +67,7 @@ app.post('/api/login', async (req, res) => {
 
     // Query user from database
     const [rows] = await pool.execute(
-      'SELECT username, password_hash FROM users WHERE username = ?',
+      'SELECT id, username, password_hash FROM users WHERE username = ?',
       [username]
     );
 
@@ -97,7 +96,8 @@ app.post('/api/login', async (req, res) => {
       success: true,
       message: 'Login successful',
       user: {
-        username: user.username
+        username: user.username,
+        id: user.id
       }
     });
 

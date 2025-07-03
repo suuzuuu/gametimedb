@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Profile - Steam Games Dashboard</title>
+  <title>Steam Games Dashboard</title>
 
   <!-- Link to Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -42,108 +42,80 @@
       padding: 2rem;
     }
 
-    .profile-container {
-      background: white;
+    .search-container {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       padding: 2rem;
       border-radius: 15px;
       margin-bottom: 2rem;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: 0 auto;
     }
 
-    .profile-header {
-      text-align: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid #f0f0f0;
-    }
-
-    .profile-header h2 {
-      color: #667eea;
-      font-weight: 300;
-      margin-bottom: 0.5rem;
-    }
-
-    .profile-header .user-icon {
-      font-size: 4rem;
-      color: #667eea;
-      margin-bottom: 1rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      font-weight: 600;
-      color: #555;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-
-    .form-control {
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
+    .search-box {
+      border-radius: 25px;
+      padding: 1rem 1.5rem;
       border: 2px solid #e0e0e0;
       font-size: 1.1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
     }
 
-    .form-control:focus {
+    .search-box:focus {
       border-color: #667eea;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
       outline: none;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      border-radius: 25px;
-      padding: 0.75rem 2rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-      border: none;
-      border-radius: 25px;
-      padding: 0.75rem 2rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
-    }
-
-    .alert {
+    .filter-section {
+      background: white;
+      padding: 1.5rem;
       border-radius: 10px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
-    .alert-success {
-      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-      border: 1px solid #b8dabc;
-      color: #155724;
+    .stats-card {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    .alert-danger {
-      background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
-      border: 1px solid #f1aeb5;
-      color: #721c24;
+    .game-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
     }
 
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
+    .game-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+    }
+
+    .game-name {
+      color: #667eea;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-info {
+      color: #666;
+      margin: 0.25rem 0;
+    }
+
+    .price-tag {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-weight: bold;
+      display: inline-block;
     }
 
     .loading {
@@ -152,8 +124,33 @@
       color: #667eea;
     }
 
-    .back-btn {
-      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 5px;
+      margin: 1rem 0;
+    }
+
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 25px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
       border-radius: 25px;
       padding: 0.5rem 1.5rem;
@@ -162,14 +159,48 @@
       transition: all 0.3s ease;
       text-decoration: none;
       display: inline-block;
-      margin-bottom: 1rem;
     }
 
-    .back-btn:hover {
+    .login-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
       color: white;
       text-decoration: none;
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 0.5rem 1.5rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      color: white;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .sort-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
@@ -177,81 +208,115 @@
 
   <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid d-flex flex-column align-items-center">
-      <a class="navbar-brand mb-2" href="/">Steam Games Database</a>
+      <a class="navbar-brand mb-2" href="#">Steam Games Database</a>
       <div class="d-flex justify-content-center flex-wrap">
         <ul class="navbar-nav d-flex flex-row align-items-center">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="window.history.back()">Back</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showStats()">Statistics</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showGames()">Browse Games</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+          <li class="nav-item ms-3" id="auth-section">
+            <!-- Authentication button will be updated by JavaScript -->
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 
   <div class="container main-content">
-    <div class="profile-container">
-      <div class="profile-header">
-        <div class="user-icon">
-          <i class="fas fa-user-circle"></i>
+    <!-- Welcome Section -->
+    <div id="welcome-section" class="row justify-content-center">
+      <div class="col-md-10 col-lg-8">
+        <h1 class="mb-4 text-center" style="color: #555; font-weight: 300;">Welcome to Steam Games Dashboard</h1>
+        <div class="search-container text-center">
+          <h3 style="color: #667eea; margin-bottom: 1rem;">Search Steam Games</h3>
+          <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Search for games..." />
+          <button class="btn btn-primary" onclick="searchGames()">
+            <i class="fas fa-search"></i> Search Games
+          </button>
         </div>
-        <h2>User Profile</h2>
-        <p class="text-muted">Manage your account information</p>
       </div>
+    </div>
 
-      <!-- Alert Messages -->
-      <div id="alert-container"></div>
-
-      <!-- Loading Indicator -->
-      <div id="loading-indicator" class="loading" style="display: none;">
-        <i class="fas fa-spinner fa-spin"></i> Loading profile...
+    <!-- Statistics Section -->
+    <div id="stats-section" class="row" style="display: none;">
+      <div class="col-12">
+        <h2 class="mb-4 text-center" style="color: #555;">Database Statistics</h2>
+        <div id="stats-content" class="row">
+          <!-- Stats will be loaded here -->
+        </div>
       </div>
+    </div>
 
-      <!-- Profile Form -->
-      <form id="profile-form" style="display: none;">
-        <div class="form-group">
-          <label for="username" class="form-label">
-            <i class="fas fa-user"></i> Username
-          </label>
-          <input type="text" class="form-control" id="username" name="username" required>
-        </div>
-
-        <div class="form-group">
-          <label for="email" class="form-label">
-            <i class="fas fa-envelope"></i> Email Address
-          </label>
-          <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-
-        <div class="form-group">
-          <label for="steam_id" class="form-label">
-            <i class="fab fa-steam"></i> Steam ID
-          </label>
-          <input type="text" class="form-control" id="steam_id" name="steam_id" placeholder="Enter your Steam ID (optional)">
-          <small class="text-muted">Your Steam ID for integration with Steam services</small>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center">
-          <a href="/" class="back-btn">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-          </a>
-          <div>
-            <button type="button" class="btn btn-secondary me-2" onclick="resetForm()">
-              <i class="fas fa-undo"></i> Reset
-            </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i> Save Changes
-            </button>
+    <!-- Games Section -->
+    <div id="games-section" class="row" style="display: none;">
+      <div class="col-12">
+        <h2 class="mb-4 text-center" style="color: #555;">Steam Games Database</h2>
+        
+        <!-- Filters -->
+        <div id="filter-section" class="filter-section" style="display: none;">
+          <div class="row">
+            <div class="col-md-6">
+              <input type="text" id="search-input" class="form-control mb-3" placeholder="Search games...">
+            </div>
+            <div class="col-md-6">
+              <div class="sort-controls">
+                <select id="sort-by" class="form-control">
+                  <option value="name">Sort by Name</option>
+                  <option value="price_usd">Sort by Price</option>
+                  <option value="hours_to_beat">Sort by Hours</option>
+                  <option value="cost_per_hour">Sort by Cost/Hour</option>
+                </select>
+                <select id="sort-order" class="form-control">
+                  <option value="ASC">Ascending</option>
+                  <option value="DESC">Descending</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label>Min Price ($)</label>
+              <input type="number" id="min-price" class="form-control" placeholder="0" min="0" step="0.01">
+            </div>
+            <div class="col-md-3">
+              <label>Max Price ($)</label>
+              <input type="number" id="max-price" class="form-control" placeholder="100" min="0" step="0.01">
+            </div>
+            <div class="col-md-3">
+              <label>Min Hours</label>
+              <input type="number" id="min-hours" class="form-control" placeholder="0" min="0" step="0.1">
+            </div>
+            <div class="col-md-3">
+              <label>Max Hours</label>
+              <input type="number" id="max-hours" class="form-control" placeholder="200" min="0" step="0.1">
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-12 text-center">
+              <button class="btn btn-primary" onclick="loadGames()">
+                <i class="fas fa-filter"></i> Apply Filters
+              </button>
+              <button class="btn btn-secondary ms-2" onclick="clearFilters()">
+                <i class="fas fa-times"></i> Clear Filters
+              </button>
+              <button class="btn btn-info ms-2" onclick="toggleFilters()">
+                <i class="fas fa-sliders-h"></i> Toggle Advanced Filters
+              </button>
+            </div>
           </div>
         </div>
-      </form>
 
-      <!-- Error Message for Unauthorized Access -->
-      <div id="unauthorized-message" class="text-center" style="display: none;">
-        <div class="alert alert-danger">
-          <h5><i class="fas fa-exclamation-triangle"></i> Access Denied</h5>
-          <p>Please log in to access your profile.</p>
-          <a href="/login.html" class="btn btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Sign In
-          </a>
+        <!-- Games List -->
+        <div id="games-list">
+          <!-- Games will be loaded here -->
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination-container">
+          <!-- Pagination will be loaded here -->
         </div>
       </div>
     </div>
@@ -260,168 +325,349 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    let originalFormData = {};
-    let userId = null;
+    // Global variables
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentFilters = {};
+    let isLoggedIn = false;
 
-    // Check authentication and load profile on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      checkAuthAndLoadProfile();
+    // Check authentication status on page load
+    function checkAuth() {
+      // Check localStorage for isLoggedin status (case-sensitive)
+      const loginStatus = localStorage.getItem('isLoggedIn');
       
-      // Add form submit event listener
-      document.getElementById('profile-form').addEventListener('submit', handleFormSubmit);
+      // User is logged in if 'isLoggedin' is the string 'true' (since localStorage stores values as strings)
+      isLoggedIn = loginStatus === 'true';
+      
+      // Update UI based on auth status
+      updateAuthUI();
+    }
+
+    // Update authentication UI
+    function updateAuthUI() {
+      const authSection = document.getElementById('auth-section');
+      
+      if (isLoggedIn) {
+        // User is signed in, show Sign Out button, hide Sign In
+        authSection.innerHTML = `
+          <button class="btn logout-btn" onclick="signOut()">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        `;
+      } else {
+        // User is not signed in, show Sign In link, hide Sign Out
+        authSection.innerHTML = `
+          <a href="/login.html" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </a>
+        `;
+      }
+    }
+
+    // Sign out function
+    function signOut() {
+        // Clear authentication data
+        localStorage.removeItem('isLoggedIn');
+        
+        // Update global state and UI
+        isLoggedIn = false;
+        updateAuthUI();
+        
+        // Reset to welcome section
+        //hideAllSections();
+        //document.getElementById('welcome-section').style.display = 'flex';      
+    }
+
+    // Initialize authentication on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuth();
+      
+      // Add event listeners
+      document.getElementById('main-search').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchGames();
+        }
+      });
+
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            loadGames();
+          }
+        });
+      }
     });
 
-    // Check authentication and load user profile
-    async function checkAuthAndLoadProfile() {
-      // Check if user is logged in
-      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-      userId = localStorage.getItem('id');
-      
-      if (!isLoggedIn || !userId) {
-        showUnauthorizedMessage();
+    // Also check when the full page loads
+    window.addEventListener('load', function() {
+      checkAuth();
+    });
+
+    // Check auth when returning to the page (in case of browser back/forward)
+    window.addEventListener('pageshow', function(event) {
+      checkAuth();
+    });
+
+    // Search games from main search
+    function searchGames() {
+      const searchTerm = document.getElementById('main-search').value.trim();
+      if (searchTerm) {
+        // Clear existing search input and show games section
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          searchInput.value = searchTerm;
+        }
+        showGames();
+        
+        // Hide filters initially after search
+        const filterSection = document.getElementById('filter-section');
+        if (filterSection) {
+          filterSection.style.display = 'none';
+        }
+        
+        loadGames();
+      }
+    }
+
+    // Show statistics section
+    async function showStats() {
+      if (!isLoggedIn) {
+        alert('Please sign in to view statistics');
         return;
       }
-
-      await loadUserProfile();
+      hideAllSections();
+      document.getElementById('stats-section').style.display = 'block';
+      await loadStats();
     }
 
-    // Show unauthorized message
-    function showUnauthorizedMessage() {
-      document.getElementById('unauthorized-message').style.display = 'block';
-      document.getElementById('profile-form').style.display = 'none';
-      document.getElementById('loading-indicator').style.display = 'none';
-    }
-
-    // Load user profile data
-    async function loadUserProfile() {
-      showLoading(true);
+    // Show games section
+    function showGames() {
+      hideAllSections();
+      document.getElementById('games-section').style.display = 'block';
       
+      // Show filters when browsing games (not after search)
+      const filterSection = document.getElementById('filter-section');
+      const searchInput = document.getElementById('search-input');
+      if (filterSection && searchInput && !searchInput.value) {
+        filterSection.style.display = 'block';
+      }
+      
+      loadGames();
+    }
+
+    // Toggle filters visibility
+    function toggleFilters() {
+      const filterSection = document.getElementById('filter-section');
+      if (filterSection.style.display === 'none') {
+        filterSection.style.display = 'block';
+      } else {
+        filterSection.style.display = 'none';
+      }
+    }
+
+    // Hide all sections
+    function hideAllSections() {
+      //document.getElementById('welcome-section').style.display = 'none';
+      document.getElementById('stats-section').style.display = 'none';
+      document.getElementById('games-section').style.display = 'none';
+    }
+
+    // Load statistics
+    async function loadStats() {
       try {
-        const response = await fetch(`/api/user/${userId}`);
+        const response = await fetch('/api/games/stats');
         const data = await response.json();
         
-        if (data.success && data.data) {
-          populateForm(data.data);
-          showForm();
-        } else {
-          showAlert('Error loading profile: ' + (data.message || 'Unknown error'), 'danger');
-          showForm(); // Show form anyway to allow manual entry
+        if (data.success) {
+          const stats = data.data.statistics;
+          document.getElementById('stats-content').innerHTML = `
+            <div class="col-md-3">
+              <div class="stats-card">
+                <h4>${stats.total_games}</h4>
+                <p>Total Games</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card">
+                <h4>$${parseFloat(stats.avg_price).toFixed(2)}</h4>
+                <p>Average Price</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card">
+                <h4>${parseFloat(stats.avg_hours).toFixed(1)}h</h4>
+                <p>Average Hours</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card">
+                <h4>$${parseFloat(stats.avg_cost_per_hour).toFixed(2)}/h</h4>
+                <p>Average Cost/Hour</p>
+              </div>
+            </div>
+          `;
         }
       } catch (error) {
-        console.error('Error loading profile:', error);
-        showAlert('Error loading profile. Please try again.', 'danger');
-        showForm(); // Show form anyway to allow manual entry
-      } finally {
-        showLoading(false);
+        console.error('Error loading stats:', error);
+        document.getElementById('stats-content').innerHTML = `
+          <div class="col-12">
+            <div class="error">Error loading statistics. Please try again.</div>
+          </div>
+        `;
       }
     }
 
-    // Populate form with user data
-    function populateForm(userData) {
-      document.getElementById('username').value = userData.username || '';
-      document.getElementById('email').value = userData.email || '';
-      document.getElementById('steam_id').value = userData.steam_id || '';
-      
-      // Store original data for reset functionality
-      originalFormData = {
-        username: userData.username || '',
-        email: userData.email || '',
-        steam_id: userData.steam_id || ''
-      };
-    }
-
-    // Handle form submission
-    async function handleFormSubmit(event) {
-      event.preventDefault();
-      
-      const formData = {
-        username: document.getElementById('username').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        steam_id: document.getElementById('steam_id').value.trim()
-      };
-
-      // Basic validation
-      if (!formData.username || !formData.email) {
-        showAlert('Username and email are required.', 'danger');
-        return;
-      }
-
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        showAlert('Please enter a valid email address.', 'danger');
-        return;
-      }
+    // Load games with filters
+    async function loadGames() {
+      const gamesListDiv = document.getElementById('games-list');
+      gamesListDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading games...</div>';
 
       try {
-        showLoading(true);
-        
-        const response = await fetch(`/api/user/${userId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
+        // Get filter values
+        const searchInput = document.getElementById('search-input');
+        const minPriceInput = document.getElementById('min-price');
+        const maxPriceInput = document.getElementById('max-price');
+        const minHoursInput = document.getElementById('min-hours');
+        const maxHoursInput = document.getElementById('max-hours');
+        const sortByInput = document.getElementById('sort-by');
+        const sortOrderInput = document.getElementById('sort-order');
+
+        const filters = {
+          search: searchInput ? searchInput.value : '',
+          minPrice: minPriceInput ? minPriceInput.value : '',
+          maxPrice: maxPriceInput ? maxPriceInput.value : '',
+          minHours: minHoursInput ? minHoursInput.value : '',
+          maxHours: maxHoursInput ? maxHoursInput.value : '',
+          sortBy: sortByInput ? sortByInput.value : 'name',
+          order: sortOrderInput ? sortOrderInput.value : 'ASC',
+          page: currentPage
+        };
+
+        // Build query string
+        const queryParams = new URLSearchParams();
+        Object.keys(filters).forEach(key => {
+          if (filters[key]) {
+            queryParams.append(key, filters[key]);
+          }
         });
 
-        const result = await response.json();
-        
-        if (result.success) {
-          showAlert('Profile updated successfully!', 'success');
-          // Update original form data
-          originalFormData = { ...formData };
+        const response = await fetch(`/api/games?${queryParams.toString()}`);
+        const data = await response.json();
+
+        if (data.success) {
+          const games = data.data.games;
+          const pagination = data.data.pagination;
+          
+          if (games.length === 0) {
+            gamesListDiv.innerHTML = '<div class="text-center"><p>No games found matching your criteria.</p></div>';
+            return;
+          }
+
+          // Display games
+          gamesListDiv.innerHTML = games.map(game => `
+            <div class="game-card">
+              <div class="game-name">${game.name}</div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="game-info"><strong>Steam ID:</strong> ${game.steam_appid}</div>
+                  <div class="game-info"><strong>Hours to Beat:</strong> ${game.hours_to_beat ? game.hours_to_beat + 'h' : 'N/A'}</div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                  <div class="price-tag">$${parseFloat(game.price_usd).toFixed(2)}</div>
+                  <div class="game-info mt-2">
+                    <strong>Cost per Hour:</strong> ${game.cost_per_hour ? '$' + parseFloat(game.cost_per_hour).toFixed(2) : 'N/A'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+
+          // Update pagination
+          updatePagination(pagination);
         } else {
-          showAlert('Error updating profile: ' + (result.message || 'Unknown error'), 'danger');
+          gamesListDiv.innerHTML = `<div class="error">Error: ${data.message}</div>`;
         }
       } catch (error) {
-        console.error('Error updating profile:', error);
-        showAlert('Error updating profile. Please try again.', 'danger');
-      } finally {
-        showLoading(false);
+        console.error('Error loading games:', error);
+        gamesListDiv.innerHTML = '<div class="error">Error loading games. Please try again.</div>';
       }
     }
 
-    // Reset form to original values
-    function resetForm() {
-      document.getElementById('username').value = originalFormData.username;
-      document.getElementById('email').value = originalFormData.email;
-      document.getElementById('steam_id').value = originalFormData.steam_id;
-      clearAlert();
-    }
+    // Update pagination
+    function updatePagination(pagination) {
+      totalPages = pagination.totalPages;
+      currentPage = pagination.currentPage;
 
-    // Show/hide loading indicator
-    function showLoading(show) {
-      document.getElementById('loading-indicator').style.display = show ? 'block' : 'none';
-    }
-
-    // Show form
-    function showForm() {
-      document.getElementById('profile-form').style.display = 'block';
-    }
-
-    // Show alert message
-    function showAlert(message, type) {
-      const alertContainer = document.getElementById('alert-container');
-      const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-      const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+      const paginationDiv = document.getElementById('pagination');
       
-      alertContainer.innerHTML = `
-        <div class="alert ${alertClass}" role="alert">
-          <i class="fas ${icon}"></i> ${message}
-        </div>
-      `;
+      if (totalPages <= 1) {
+        paginationDiv.innerHTML = '';
+        return;
+      }
+
+      let paginationHTML = '<nav><ul class="pagination">';
       
-      // Auto-hide success messages after 5 seconds
-      if (type === 'success') {
-        setTimeout(() => {
-          clearAlert();
-        }, 5000);
+      // Previous button
+      if (pagination.hasPrevPage) {
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`;
+      }
+
+      // Page numbers
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, currentPage + 2);
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+          <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+        </li>`;
+      }
+
+      // Next button
+      if (pagination.hasNextPage) {
+        paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`;
+      }
+
+      paginationHTML += '</ul></nav>';
+      paginationHTML += `<div class="mt-2 text-center">
+        <small class="text-muted">
+          Showing ${((currentPage - 1) * pagination.gamesPerPage) + 1} to 
+          ${Math.min(currentPage * pagination.gamesPerPage, pagination.totalGames)} 
+          of ${pagination.totalGames} games
+        </small>
+      </div>`;
+
+      paginationDiv.innerHTML = paginationHTML;
+    }
+
+    // Change page
+    function changePage(page) {
+      if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        loadGames();
       }
     }
 
-    // Clear alert message
-    function clearAlert() {
-      document.getElementById('alert-container').innerHTML = '';
+    // Clear filters
+    function clearFilters() {
+      const searchInput = document.getElementById('search-input');
+      const minPriceInput = document.getElementById('min-price');
+      const maxPriceInput = document.getElementById('max-price');
+      const minHoursInput = document.getElementById('min-hours');
+      const maxHoursInput = document.getElementById('max-hours');
+      const sortByInput = document.getElementById('sort-by');
+      const sortOrderInput = document.getElementById('sort-order');
+
+      if (searchInput) searchInput.value = '';
+      if (minPriceInput) minPriceInput.value = '';
+      if (maxPriceInput) maxPriceInput.value = '';
+      if (minHoursInput) minHoursInput.value = '';
+      if (maxHoursInput) maxHoursInput.value = '';
+      if (sortByInput) sortByInput.value = 'name';
+      if (sortOrderInput) sortOrderInput.value = 'ASC';
+      
+      currentPage = 1;
+      loadGames();
     }
   </script>
 </body>

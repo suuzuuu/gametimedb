@@ -110,6 +110,134 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Signup endpoint
+app.post('/api/signup', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username, email, and password are required'
+      });
+    }
+
+    // Validate username format
+    if (username.length < 3 || username.length > 20) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username must be between 3 and 20 characters'
+      });
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username can only contain letters, numbers, and underscores'
+      });
+    }
+
+    // Validate email format (basic)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email address'
+      });
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    // Check if username already exists
+    const [existingUsername] = await pool.execute(
+      'SELECT id FROM users WHERE username = ?',
+      [username]
+    );
+
+    if (existingUsername.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Username already exists'
+      });
+    }
+
+    // Check if email already exists
+    const [existingEmail] = await pool.execute(
+      'SELECT id FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (existingEmail.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already registered'
+      });
+    }
+
+    // Hash password
+    const saltRounds = 12;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    // Insert new user into database
+    const [result] = await pool.execute(
+      'INSERT INTO users (username, email, password_hash, created_at) VALUES (?, ?, ?, NOW())',
+      [username, email, passwordHash]
+    );
+
+    // Get the created user ID
+    const userId = result.insertId;
+
+    // Log successful signup
+    console.log(`New user registered: ${username} (ID: ${userId})`);
+
+    // Successful signup
+    res.status(201).json({
+      success: true,
+      message: 'Account created successfully',
+      user: {
+        id: userId,
+        username: username,
+        email: email
+      }
+    });
+
+  } catch (error) {
+    console.error('Signup error:', error);
+    
+    // Handle duplicate entry errors specifically
+    if (error.code === 'ER_DUP_ENTRY') {
+      if (error.message.includes('username')) {
+        return res.status(409).json({
+          success: false,
+          message: 'Username already exists'
+        });
+      } else if (error.message.includes('email')) {
+        return res.status(409).json({
+          success: false,
+          message: 'Email already registered'
+        });
+      }
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error'
+    });
+  }
+});
+
+// Also add a route to serve the signup page
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
+});
+
 // GAMES ENDPOINTS - Added for search functionality
 
 // Get all games with optional filtering and pagination

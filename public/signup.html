@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Create Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2">Create Account</h1>
+            <p class="text-gray-400">Join us and start your journey</p>
+        </div>
+        
+        <form class="space-y-6" id="signupForm">
+            <!-- Error message display -->
+            <div id="errorMessage" class="hidden bg-red-600 text-white p-3 rounded-md text-sm"></div>
+            
+            <!-- Success message display -->
+            <div id="successMessage" class="hidden bg-green-600 text-white p-3 rounded-md text-sm"></div>
+            
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-300 mb-2">
+                    Username
+                </label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username"
+                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    placeholder="Choose a username"
+                    required
+                    minlength="3"
+                    maxlength="20"
+                >
+                <p class="text-xs text-gray-400 mt-1">3-20 characters, letters and numbers only</p>
+            </div>
+            
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">
+                    Email Address
+                </label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email"
+                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">
+                    Password
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password"
+                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    placeholder="Create a password"
+                    required
+                    minlength="6"
+                >
+                <p class="text-xs text-gray-400 mt-1">At least 6 characters</p>
+            </div>
+            
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2">
+                    Confirm Password
+                </label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword"
+                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    placeholder="Confirm your password"
+                    required
+                    minlength="6"
+                >
+            </div>
+            
+            <div class="flex items-center">
+                <input 
+                    type="checkbox" 
+                    id="terms" 
+                    name="terms"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700 rounded"
+                    required
+                >
+                <label for="terms" class="ml-2 block text-sm text-gray-300">
+                    I agree to the <a href="#" class="text-blue-400 hover:text-blue-300">Terms of Service</a> and <a href="#" class="text-blue-400 hover:text-blue-300">Privacy Policy</a>
+                </label>
+            </div>
+            
+            <button 
+                type="submit"
+                id="signupButton"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                Create Account
+            </button>
+        </form>
+        
+        <div class="mt-6 text-center">
+            <p class="text-gray-400">
+                Already have an account? 
+                <a href="login.html" class="text-blue-400 hover:text-blue-300 font-medium">
+                    Sign in
+                </a>
+            </p>
+        </div>
+        
+        <!-- Back to Home link -->
+        <div class="mt-4 text-center">
+            <a href="index.html" class="text-sm text-gray-400 hover:text-gray-300">
+                ← Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Client-side validation
+        function validateForm(formData) {
+            const username = formData.get('username');
+            const email = formData.get('email');
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            
+            // Username validation
+            if (username.length < 3 || username.length > 20) {
+                return 'Username must be between 3 and 20 characters';
+            }
+            
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                return 'Username can only contain letters, numbers, and underscores';
+            }
+            
+            // Email validation (basic)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return 'Please enter a valid email address';
+            }
+            
+            // Password validation
+            if (password.length < 6) {
+                return 'Password must be at least 6 characters long';
+            }
+            
+            // Password confirmation
+            if (password !== confirmPassword) {
+                return 'Passwords do not match';
+            }
+            
+            return null; // No errors
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const signupButton = document.getElementById('signupButton');
+            
+            // Hide previous messages
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+            
+            // Client-side validation
+            const validationError = validateForm(formData);
+            if (validationError) {
+                errorMessage.textContent = validationError;
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+            
+            // Show loading state
+            signupButton.textContent = 'Creating Account...';
+            signupButton.disabled = true;
+            
+            // Prepare signup data
+            const signupData = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(signupData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Show success message
+                    successMessage.textContent = `${data.message || 'Account created successfully!'} Redirecting to login...`;
+                    successMessage.classList.remove('hidden');
+                    
+                    // Clear form
+                    form.reset();
+                    
+                    // Log success
+                    console.log('Signup successful for user:', data.user?.username || 'Unknown user');
+                    
+                    // Redirect to login page after successful signup
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                    
+                } else {
+                    // Show error message
+                    errorMessage.textContent = data.message || 'Failed to create account';
+                    errorMessage.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Signup error:', error);
+                errorMessage.textContent = 'Network error. Please check your connection and try again.';
+                errorMessage.classList.remove('hidden');
+            } finally {
+                // Reset button state
+                signupButton.textContent = 'Create Account';
+                signupButton.disabled = false;
+            }
+        });
+
+        // Real-time password matching validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.setCustomValidity('Passwords do not match');
+                this.classList.add('border-red-500');
+                this.classList.remove('border-gray-600');
+            } else {
+                this.setCustomValidity('');
+                this.classList.remove('border-red-500');
+                this.classList.add('border-gray-600');
+            }
+        });
+
+        // Username validation on input
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value;
+            
+            if (username && !/^[a-zA-Z0-9_]+$/.test(username)) {
+                this.setCustomValidity('Username can only contain letters, numbers, and underscores');
+                this.classList.add('border-red-500');
+                this.classList.remove('border-gray-600');
+            } else {
+                this.setCustomValidity('');
+                this.classList.remove('border-red-500');
+                this.classList.add('border-gray-600');
+            }
+        });
+    </script>
+</body>
+</html>

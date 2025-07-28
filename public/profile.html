@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile - Steam Games Dashboard</title>
+
+  <!-- Link to Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Link to Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    /* Custom gradient navbar styles */
+    .navbar-custom {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem 0;
+    }
+
+    .navbar-custom .navbar-brand {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .navbar-custom .nav-link {
+      color: white !important;
+      margin: 0 1rem;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .navbar-custom .nav-link:hover {
+      color: #ffd700 !important;
+      transform: translateY(-2px);
+    }
+
+    .main-content {
+      margin-top: 2rem;
+      padding: 2rem;
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      transform: rotate(45deg);
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .profile-name {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .profile-status {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .profile-stat {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      min-width: 120px;
+    }
+
+    .profile-stat-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .profile-stat-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .stats-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .stats-card h3 {
+      color: #667eea;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+    }
+
+    .stat-item {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+
+    .stat-item:hover {
+      transform: translateX(5px);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      margin-right: 1rem;
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+
+    .stat-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-subtitle {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #667eea;
+    }
+
+    .activity-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border-left: 4px solid #667eea;
+      transition: all 0.3s ease;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .activity-icon {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .activity-time {
+      color: #999;
+      font-size: 0.85rem;
+      float: right;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 0.75rem 2rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-outline-primary {
+      border: 2px solid #667eea;
+      color: #667eea;
+      border-radius: 25px;
+      padding: 0.75rem 2rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .logout-btn {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 0.5rem 1.5rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+      color: white;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    .badge-custom {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin: 0.25rem;
+      display: inline-block;
+    }
+
+    .progress-custom {
+      height: 8px;
+      border-radius: 10px;
+      background: #e9ecef;
+      overflow: hidden;
+    }
+
+    .progress-bar-custom {
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .profile-stats {
+        gap: 1rem;
+      }
+      
+      .profile-stat {
+        min-width: 100px;
+      }
+      
+      .stat-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .activity-time {
+        float: none;
+        display: block;
+        margin-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid d-flex flex-column align-items-center">
+      <a class="navbar-brand mb-2" href="index.html">Steam Games Database</a>
+      <div class="d-flex justify-content-center flex-wrap">
+        <ul class="navbar-nav d-flex flex-row align-items-center">
+          <li class="nav-item"><a class="nav-link" href="#" style="color: #ffd700 !important;">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Browse Games</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+          <li class="nav-item ms-3">
+            <button class="btn logout-btn" onclick="signOut()">
+              <i class="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container main-content">
+    <!-- Profile Header -->
+    <div class="profile-header text-center">
+      <div class="profile-avatar mx-auto">
+        <i class="fas fa-user"></i>
+      </div>
+      <h1 class="profile-name">John Steam Gamer</h1>
+      <p class="profile-status">
+        <i class="fas fa-circle text-success"></i> Online • Steam Level 42
+      </p>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <span class="profile-stat-number">247</span>
+          <span class="profile-stat-label">Games Owned</span>
+        </div>
+        <div class="profile-stat">
+          <span class="profile-stat-number">1,534</span>
+          <span class="profile-stat-label">Hours Played</span>
+        </div>
+        <div class="profile-stat">
+          <span class="profile-stat-number">89</span>
+          <span class="profile-stat-label">Achievements</span>
+        </div>
+        <div class="profile-stat">
+          <span class="profile-stat-number">$2,341</span>
+          <span class="profile-stat-label">Total Spent</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Gaming Statistics -->
+      <div class="col-lg-8">
+        <div class="stats-card">
+          <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
+          
+          <div class="stat-item">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon">
+                <i class="fas fa-gamepad"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-title">Most Played Game</div>
+                <div class="stat-subtitle">Counter-Strike 2</div>
+              </div>
+            </div>
+            <div class="stat-value">342 hours</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-title">Average Session</div>
+                <div class="stat-subtitle">Time per gaming session</div>
+              </div>
+            </div>
+            <div class="stat-value">2.3 hours</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-title">Best Value Game</div>
+                <div class="stat-subtitle">Terraria - $0.08/hour</div>
+              </div>
+            </div>
+            <div class="stat-value">124 hours</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-title">Achievement Rate</div>
+                <div class="stat-subtitle">Completion percentage</div>
+              </div>
+            </div>
+            <div class="stat-value">73%</div>
+          </div>
+        </div>
+
+        <!-- Favorite Genres -->
+        <div class="stats-card">
+          <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
+          
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Action</span>
+              <span>45%</span>
+            </div>
+            <div class="progress-custom">
+              <div class="progress-bar-custom" style="width: 45%"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>RPG</span>
+              <span>32%</span>
+            </div>
+            <div class="progress-custom">
+              <div class="progress-bar-custom" style="width: 32%"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Strategy</span>
+              <span>18%</span>
+            </div>
+            <div class="progress-custom">
+              <div class="progress-bar-custom" style="width: 18%"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Indie</span>
+              <span>25%</span>
+            </div>
+            <div class="progress-custom">
+              <div class="progress-bar-custom" style="width: 25%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Recent Activity -->
+        <div class="stats-card">
+          <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
+          
+          <div class="activity-card">
+            <div class="activity-time">2 hours ago</div>
+            <div class="activity-icon">
+              <i class="fas fa-play"></i>
+            </div>
+            <strong>Started playing</strong><br>
+            <span class="text-muted">Cyberpunk 2077</span>
+          </div>
+
+          <div class="activity-card">
+            <div class="activity-time">5 hours ago</div>
+            <div class="activity-icon">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <strong>Achievement unlocked</strong><br>
+            <span class="text-muted">Master Chief in Halo Infinite</span>
+          </div>
+
+          <div class="activity-card">
+            <div class="activity-time">1 day ago</div>
+            <div class="activity-icon">
+              <i class="fas fa-download"></i>
+            </div>
+            <strong>Purchased</strong><br>
+            <span class="text-muted">Baldur's Gate 3</span>
+          </div>
+
+          <div class="activity-card">
+            <div class="activity-time">2 days ago</div>
+            <div class="activity-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <strong>Played with friends</strong><br>
+            <span class="text-muted">Left 4 Dead 2</span>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements -->
+        <div class="stats-card">
+          <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
+          
+          <div class="text-center">
+            <div class="badge-custom">
+              <i class="fas fa-fire me-1"></i>
+              10 Day Streak
+            </div>
+            <div class="badge-custom">
+              <i class="fas fa-star me-1"></i>
+              100 Games
+            </div>
+            <div class="badge-custom">
+              <i class="fas fa-clock me-1"></i>
+              1000 Hours
+            </div>
+            <div class="badge-custom">
+              <i class="fas fa-gem me-1"></i>
+              Rare Game
+            </div>
+            <div class="badge-custom">
+              <i class="fas fa-heart me-1"></i>
+              Wishlist Master
+            </div>
+            <div class="badge-custom">
+              <i class="fas fa-shopping-cart me-1"></i>
+              Sale Hunter
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="stats-card">
+          <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
+          
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" onclick="editProfile()">
+              <i class="fas fa-edit me-2"></i>Edit Profile
+            </button>
+            <button class="btn btn-outline-primary" onclick="viewLibrary()">
+              <i class="fas fa-book me-2"></i>View Library
+            </button>
+            <button class="btn btn-outline-primary" onclick="exportData()">
+              <i class="fas fa-download me-2"></i>Export Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Sign out function
+    function signOut() {
+      if (confirm('Are you sure you want to sign out?')) {
+        // In a real app, this would clear authentication tokens
+        alert('Signed out successfully!');
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Edit profile function
+    function editProfile() {
+      alert('Edit profile functionality would be implemented here');
+    }
+
+    // View library function
+    function viewLibrary() {
+      window.location.href = 'index.html#games';
+    }
+
+    // Export data function
+    function exportData() {
+      // In a real app, this would generate and download user data
+      const data = {
+        profile: {
+          name: 'John Steam Gamer',
+          level: 42,
+          gamesOwned: 247,
+          hoursPlayed: 1534,
+          achievements: 89,
+          totalSpent: 2341
+        },
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'steam-profile-data.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert('Profile data exported successfully!');
+    }
+
+    // Add some interactive animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate progress bars on load
+      const progressBars = document.querySelectorAll('.progress-bar-custom');
+      
+      setTimeout(() => {
+        progressBars.forEach(bar => {
+          const width = bar.style.width;
+          bar.style.width = '0%';
+          setTimeout(() => {
+            bar.style.width = width;
+          }, 100);
+        });
+      }, 500);
+
+      // Add hover effects to stat items
+      const statItems = document.querySelectorAll('.stat-item');
+      statItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateX(5px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateX(0)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

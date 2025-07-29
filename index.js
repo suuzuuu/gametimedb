@@ -187,7 +187,7 @@ app.post('/api/signup', async (req, res) => {
 
     // Insert new user into database
     const [result] = await pool.execute(
-      'INSERT INTO users (username, email, password_hash, created_at, steam_id) VALUES (?, ?, ?, NOW()), ?',
+      'INSERT INTO users (username, email, password_hash, created_at, steam_id) VALUES (?, ?, ?, NOW(), ?)',
       [username, email, passwordHash, steamId]
     );
 

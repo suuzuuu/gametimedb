@@ -113,7 +113,7 @@ app.post('/api/login', async (req, res) => {
 // Signup endpoint
 app.post('/api/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, steamId } = req.body;
 
     // Validate input
     if (!username || !email || !password) {

@@ -42,6 +42,33 @@
       padding: 2rem;
     }
 
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50vh;
+    }
+
+    .spinner-border-custom {
+      width: 3rem;
+      height: 3rem;
+      border: 0.3rem solid rgba(102, 126, 234, 0.3);
+      border-top: 0.3rem solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      text-align: center;
+      padding: 3rem;
+      color: #dc3545;
+    }
+
     .profile-header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -297,6 +324,13 @@
       transition: width 0.3s ease;
     }
 
+    .no-data {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 2rem;
+    }
+
     @media (max-width: 768px) {
       .profile-stats {
         gap: 1rem;
@@ -331,10 +365,8 @@
           <li class="nav-item"><a class="nav-link" href="index.html">Browse Games</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
-          <li class="nav-item ms-3">
-            <button class="btn logout-btn" onclick="signOut()">
-              <i class="fas fa-sign-out-alt"></i> Sign Out
-            </button>
+          <li class="nav-item ms-3" id="authButton">
+            <!-- Auth button will be populated by JavaScript -->
           </li>
         </ul>
       </div>
@@ -342,229 +374,101 @@
   </nav>
 
   <div class="container main-content">
-    <!-- Profile Header -->
-    <div class="profile-header text-center">
-      <div class="profile-avatar mx-auto">
-        <i class="fas fa-user"></i>
-      </div>
-      <h1 class="profile-name">John Steam Gamer</h1>
-      <p class="profile-status">
-        <i class="fas fa-circle text-success"></i> Online • Steam Level 42
-      </p>
-      <div class="profile-stats">
-        <div class="profile-stat">
-          <span class="profile-stat-number">247</span>
-          <span class="profile-stat-label">Games Owned</span>
-        </div>
-        <div class="profile-stat">
-          <span class="profile-stat-number">1,534</span>
-          <span class="profile-stat-label">Hours Played</span>
-        </div>
-        <div class="profile-stat">
-          <span class="profile-stat-number">89</span>
-          <span class="profile-stat-label">Achievements</span>
-        </div>
-        <div class="profile-stat">
-          <span class="profile-stat-number">$2,341</span>
-          <span class="profile-stat-label">Total Spent</span>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-spinner">
+      <div class="spinner-border-custom"></div>
     </div>
 
-    <div class="row">
-      <!-- Gaming Statistics -->
-      <div class="col-lg-8">
-        <div class="stats-card">
-          <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
-          
-          <div class="stat-item">
-            <div class="d-flex align-items-center">
-              <div class="stat-icon">
-                <i class="fas fa-gamepad"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-title">Most Played Game</div>
-                <div class="stat-subtitle">Counter-Strike 2</div>
-              </div>
-            </div>
-            <div class="stat-value">342 hours</div>
-          </div>
+    <!-- Error State -->
+    <div id="errorState" class="error-message d-none">
+      <h3><i class="fas fa-exclamation-triangle me-2"></i>Unable to Load Profile</h3>
+      <p>Please make sure you are logged in and try again.</p>
+      <button class="btn btn-primary" onclick="window.location.href='login.html'">Go to Login</button>
+    </div>
 
-          <div class="stat-item">
-            <div class="d-flex align-items-center">
-              <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-title">Average Session</div>
-                <div class="stat-subtitle">Time per gaming session</div>
-              </div>
-            </div>
-            <div class="stat-value">2.3 hours</div>
-          </div>
-
-          <div class="stat-item">
-            <div class="d-flex align-items-center">
-              <div class="stat-icon">
-                <i class="fas fa-dollar-sign"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-title">Best Value Game</div>
-                <div class="stat-subtitle">Terraria - $0.08/hour</div>
-              </div>
-            </div>
-            <div class="stat-value">124 hours</div>
-          </div>
-
-          <div class="stat-item">
-            <div class="d-flex align-items-center">
-              <div class="stat-icon">
-                <i class="fas fa-trophy"></i>
-              </div>
-              <div class="stat-content">
-                <div class="stat-title">Achievement Rate</div>
-                <div class="stat-subtitle">Completion percentage</div>
-              </div>
-            </div>
-            <div class="stat-value">73%</div>
-          </div>
+    <!-- Profile Content -->
+    <div id="profileContent" class="d-none">
+      <!-- Profile Header -->
+      <div class="profile-header text-center">
+        <div class="profile-avatar mx-auto">
+          <i class="fas fa-user"></i>
         </div>
-
-        <!-- Favorite Genres -->
-        <div class="stats-card">
-          <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
-          
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span>Action</span>
-              <span>45%</span>
-            </div>
-            <div class="progress-custom">
-              <div class="progress-bar-custom" style="width: 45%"></div>
-            </div>
+        <h1 class="profile-name" id="profileName">Loading...</h1>
+        <p class="profile-status" id="profileStatus">
+          <i class="fas fa-circle text-success"></i> Loading...
+        </p>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="gamesOwned">-</span>
+            <span class="profile-stat-label">Games Owned</span>
           </div>
-
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span>RPG</span>
-              <span>32%</span>
-            </div>
-            <div class="progress-custom">
-              <div class="progress-bar-custom" style="width: 32%"></div>
-            </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="hoursPlayed">-</span>
+            <span class="profile-stat-label">Hours Played</span>
           </div>
-
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span>Strategy</span>
-              <span>18%</span>
-            </div>
-            <div class="progress-custom">
-              <div class="progress-bar-custom" style="width: 18%"></div>
-            </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="achievements">-</span>
+            <span class="profile-stat-label">Achievements</span>
           </div>
-
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span>Indie</span>
-              <span>25%</span>
-            </div>
-            <div class="progress-custom">
-              <div class="progress-bar-custom" style="width: 25%"></div>
-            </div>
+          <div class="profile-stat">
+            <span class="profile-stat-number" id="totalSpent">$-</span>
+            <span class="profile-stat-label">Total Spent</span>
           </div>
         </div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="col-lg-4">
-        <!-- Recent Activity -->
-        <div class="stats-card">
-          <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
-          
-          <div class="activity-card">
-            <div class="activity-time">2 hours ago</div>
-            <div class="activity-icon">
-              <i class="fas fa-play"></i>
+      <div class="row">
+        <!-- Gaming Statistics -->
+        <div class="col-lg-8">
+          <div class="stats-card">
+            <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
+            <div id="gamingStats">
+              <div class="no-data">No gaming statistics available yet.</div>
             </div>
-            <strong>Started playing</strong><br>
-            <span class="text-muted">Cyberpunk 2077</span>
           </div>
 
-          <div class="activity-card">
-            <div class="activity-time">5 hours ago</div>
-            <div class="activity-icon">
-              <i class="fas fa-trophy"></i>
-            </div>
-            <strong>Achievement unlocked</strong><br>
-            <span class="text-muted">Master Chief in Halo Infinite</span>
-          </div>
-
-          <div class="activity-card">
-            <div class="activity-time">1 day ago</div>
-            <div class="activity-icon">
-              <i class="fas fa-download"></i>
-            </div>
-            <strong>Purchased</strong><br>
-            <span class="text-muted">Baldur's Gate 3</span>
-          </div>
-
-          <div class="activity-card">
-            <div class="activity-time">2 days ago</div>
-            <div class="activity-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <strong>Played with friends</strong><br>
-            <span class="text-muted">Left 4 Dead 2</span>
-          </div>
-        </div>
-
-        <!-- Badges & Achievements -->
-        <div class="stats-card">
-          <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
-          
-          <div class="text-center">
-            <div class="badge-custom">
-              <i class="fas fa-fire me-1"></i>
-              10 Day Streak
-            </div>
-            <div class="badge-custom">
-              <i class="fas fa-star me-1"></i>
-              100 Games
-            </div>
-            <div class="badge-custom">
-              <i class="fas fa-clock me-1"></i>
-              1000 Hours
-            </div>
-            <div class="badge-custom">
-              <i class="fas fa-gem me-1"></i>
-              Rare Game
-            </div>
-            <div class="badge-custom">
-              <i class="fas fa-heart me-1"></i>
-              Wishlist Master
-            </div>
-            <div class="badge-custom">
-              <i class="fas fa-shopping-cart me-1"></i>
-              Sale Hunter
+          <!-- Favorite Genres -->
+          <div class="stats-card">
+            <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
+            <div id="favoriteGenres">
+              <div class="no-data">No genre data available yet.</div>
             </div>
           </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="stats-card">
-          <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
-          
-          <div class="d-grid gap-2">
-            <button class="btn btn-primary" onclick="editProfile()">
-              <i class="fas fa-edit me-2"></i>Edit Profile
-            </button>
-            <button class="btn btn-outline-primary" onclick="viewLibrary()">
-              <i class="fas fa-book me-2"></i>View Library
-            </button>
-            <button class="btn btn-outline-primary" onclick="exportData()">
-              <i class="fas fa-download me-2"></i>Export Data
-            </button>
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+          <!-- Recent Activity -->
+          <div class="stats-card">
+            <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
+            <div id="recentActivity">
+              <div class="no-data">No recent activity to display.</div>
+            </div>
+          </div>
+
+          <!-- Badges & Achievements -->
+          <div class="stats-card">
+            <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
+            <div id="recentBadges" class="text-center">
+              <div class="no-data">No badges earned yet.</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="stats-card">
+            <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
+            
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" onclick="editProfile()">
+                <i class="fas fa-edit me-2"></i>Edit Profile
+              </button>
+              <button class="btn btn-outline-primary" onclick="viewLibrary()">
+                <i class="fas fa-book me-2"></i>View Library
+              </button>
+              <button class="btn btn-outline-primary" onclick="exportData()">
+                <i class="fas fa-download me-2"></i>Export Data
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -574,59 +478,240 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // Sign out function
-    function signOut() {
-      if (confirm('Are you sure you want to sign out?')) {
-        // In a real app, this would clear authentication tokens
-        alert('Signed out successfully!');
-        window.location.href = 'index.html';
+    let currentUser = null;
+
+    // Check authentication and load profile on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuthenticationAndLoadProfile();
+    });
+
+    // Check authentication and update UI accordingly
+    async function checkAuthenticationAndLoadProfile() {
+      try {
+        // Check if user is authenticated
+        const authResponse = await fetch('/api/auth/check', {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!authResponse.ok) {
+          // User is not authenticated - redirect to login
+          window.location.href = 'login.html';
+          return;
+        }
+
+        const authData = await authResponse.json();
+        currentUser = authData.user;
+
+        // Update navigation to show sign out button
+        updateAuthButton(true);
+
+        // Load profile data
+        await loadUserProfile();
+
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        // Redirect to login on any authentication error
+        window.location.href = 'login.html';
       }
     }
 
-    // Edit profile function
-    function editProfile() {
-      alert('Edit profile functionality would be implemented here');
+    // Update authentication button based on login status
+    function updateAuthButton(isLoggedIn) {
+      const authButton = document.getElementById('authButton');
+      
+      if (isLoggedIn) {
+        authButton.innerHTML = `
+          <button class="btn logout-btn" onclick="signOut()">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        `;
+      } else {
+        authButton.innerHTML = `
+          <button class="btn btn-outline-light" onclick="window.location.href='login.html'">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </button>
+        `;
+      }
     }
 
-    // View library function
-    function viewLibrary() {
-      window.location.href = 'index.html#games';
+    // Load user profile data
+    async function loadUserProfile() {
+      try {
+        // Load profile data
+        const profileResponse = await fetch(`/api/profile/${currentUser.id}`, {
+          method: 'GET',
+          credentials: 'include'
+        });
+
+        if (!profileResponse.ok) {
+          throw new Error('Failed to load profile');
+        }
+
+        const profileData = await profileResponse.json();
+        displayProfile(profileData);
+
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        showError();
+      }
     }
 
-    // Export data function
-    function exportData() {
-      // In a real app, this would generate and download user data
-      const data = {
-        profile: {
-          name: 'John Steam Gamer',
-          level: 42,
-          gamesOwned: 247,
-          hoursPlayed: 1534,
-          achievements: 89,
-          totalSpent: 2341
-        },
-        exportDate: new Date().toISOString(),
-        version: '1.0'
-      };
-      
-      const dataStr = JSON.stringify(data, null, 2);
-      const dataBlob = new Blob([dataStr], {type: 'application/json'});
-      const url = URL.createObjectURL(dataBlob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'steam-profile-data.json';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      alert('Profile data exported successfully!');
+    // Display profile data
+    function displayProfile(data) {
+      // Hide loading state
+      document.getElementById('loadingState').classList.add('d-none');
+      document.getElementById('profileContent').classList.remove('d-none');
+
+      // Update profile header
+      document.getElementById('profileName').textContent = data.username || 'Steam User';
+      document.getElementById('profileStatus').innerHTML = `
+        <i class="fas fa-circle ${data.isOnline ? 'text-success' : 'text-secondary'}"></i> 
+        ${data.isOnline ? 'Online' : 'Offline'} • Steam ID: ${data.steamId || 'Not connected'}
+      `;
+
+      // Update stats
+      document.getElementById('gamesOwned').textContent = data.stats?.gamesOwned || 0;
+      document.getElementById('hoursPlayed').textContent = formatNumber(data.stats?.hoursPlayed || 0);
+      document.getElementById('achievements').textContent = data.stats?.achievements || 0;
+      document.getElementById('totalSpent').textContent = `$${formatNumber(data.stats?.totalSpent || 0)}`;
+
+      // Update gaming statistics
+      if (data.gamingStats && data.gamingStats.length > 0) {
+        displayGamingStats(data.gamingStats);
+      }
+
+      // Update favorite genres
+      if (data.favoriteGenres && data.favoriteGenres.length > 0) {
+        displayFavoriteGenres(data.favoriteGenres);
+      }
+
+      // Update recent activity
+      if (data.recentActivity && data.recentActivity.length > 0) {
+        displayRecentActivity(data.recentActivity);
+      }
+
+      // Update badges
+      if (data.badges && data.badges.length > 0) {
+        displayBadges(data.badges);
+      }
+
+      // Initialize animations
+      initializeAnimations();
     }
 
-    // Add some interactive animations
-    document.addEventListener('DOMContentLoaded', function() {
-      // Animate progress bars on load
+    // Display gaming statistics
+    function displayGamingStats(stats) {
+      const container = document.getElementById('gamingStats');
+      container.innerHTML = '';
+
+      stats.forEach(stat => {
+        const statItem = document.createElement('div');
+        statItem.className = 'stat-item';
+        statItem.innerHTML = `
+          <div class="d-flex align-items-center">
+            <div class="stat-icon">
+              <i class="${stat.icon || 'fas fa-gamepad'}"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-title">${stat.title}</div>
+              <div class="stat-subtitle">${stat.subtitle}</div>
+            </div>
+          </div>
+          <div class="stat-value">${stat.value}</div>
+        `;
+        container.appendChild(statItem);
+      });
+    }
+
+    // Display favorite genres
+    function displayFavoriteGenres(genres) {
+      const container = document.getElementById('favoriteGenres');
+      container.innerHTML = '';
+
+      genres.forEach(genre => {
+        const genreItem = document.createElement('div');
+        genreItem.className = 'mb-3';
+        genreItem.innerHTML = `
+          <div class="d-flex justify-content-between mb-1">
+            <span>${genre.name}</span>
+            <span>${genre.percentage}%</span>
+          </div>
+          <div class="progress-custom">
+            <div class="progress-bar-custom" style="width: ${genre.percentage}%"></div>
+          </div>
+        `;
+        container.appendChild(genreItem);
+      });
+    }
+
+    // Display recent activity
+    function displayRecentActivity(activities) {
+      const container = document.getElementById('recentActivity');
+      container.innerHTML = '';
+
+      activities.forEach(activity => {
+        const activityCard = document.createElement('div');
+        activityCard.className = 'activity-card';
+        activityCard.innerHTML = `
+          <div class="activity-time">${formatTimeAgo(activity.timestamp)}</div>
+          <div class="activity-icon">
+            <i class="${activity.icon || 'fas fa-play'}"></i>
+          </div>
+          <strong>${activity.title}</strong><br>
+          <span class="text-muted">${activity.description}</span>
+        `;
+        container.appendChild(activityCard);
+      });
+    }
+
+    // Display badges
+    function displayBadges(badges) {
+      const container = document.getElementById('recentBadges');
+      container.innerHTML = '';
+
+      badges.forEach(badge => {
+        const badgeElement = document.createElement('div');
+        badgeElement.className = 'badge-custom';
+        badgeElement.innerHTML = `
+          <i class="${badge.icon || 'fas fa-medal'} me-1"></i>
+          ${badge.name}
+        `;
+        container.appendChild(badgeElement);
+      });
+    }
+
+    // Show error state
+    function showError() {
+      document.getElementById('loadingState').classList.add('d-none');
+      document.getElementById('errorState').classList.remove('d-none');
+      // Update auth button to show sign in when there's an error
+      updateAuthButton(false);
+    }
+
+    // Utility functions
+    function formatNumber(num) {
+      if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'k';
+      }
+      return num.toString();
+    }
+
+    function formatTimeAgo(timestamp) {
+      const now = new Date();
+      const time = new Date(timestamp);
+      const diffInHours = Math.floor((now - time) / (1000 * 60 * 60));
+
+      if (diffInHours < 1) return 'Just now';
+      if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+      
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    }
+
+    // Initialize animations
+    function initializeAnimations() {
+      // Animate progress bars
       const progressBars = document.querySelectorAll('.progress-bar-custom');
       
       setTimeout(() => {
@@ -650,7 +735,69 @@
           this.style.transform = 'translateX(0)';
         });
       });
-    });
+    }
+
+    // Sign out function
+    async function signOut() {
+      if (confirm('Are you sure you want to sign out?')) {
+        try {
+          await fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          window.location.href = 'index.html';
+        } catch (error) {
+          console.error('Logout error:', error);
+          // Fallback: clear local state and redirect
+          window.location.href = 'index.html';
+        }
+      }
+    }
+
+    // Edit profile function
+    function editProfile() {
+      // Redirect to edit profile page or show modal
+      window.location.href = 'edit-profile.html';
+    }
+
+    // View library function
+    function viewLibrary() {
+      window.location.href = 'index.html#games';
+    }
+
+    // Export data function
+    function exportData() {
+      if (!currentUser) {
+        alert('No user data available to export');
+        return;
+      }
+
+      // Create export data with actual user information
+      const data = {
+        profile: {
+          username: currentUser.username,
+          email: currentUser.email,
+          steamId: currentUser.steamId,
+          joinDate: currentUser.createdAt
+        },
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${currentUser.username}-profile-data.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert('Profile data exported successfully!');
+    }
   </script>
 </body>
 </html>

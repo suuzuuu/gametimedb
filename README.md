@@ -86,7 +86,7 @@ enterprise-computing-project/
 ├── public/                    # Static files served by Express
 │   ├── login.html            # Login page (served at root /)
 │   ├── index.html            # Dashboard (served at /dashboard)
-│   ├── script.js             # Client-side JavaScript
+│   ├── privacy.html           # This is privacy page
 │   └── ASSESSMENT2/src/      # CSS and additional assets
 │       └── Styles.css        # Custom stylesheet
 │
@@ -123,8 +123,8 @@ enterprise-computing-project/
 | GET | `/dashboard` | Serves dashboard after login | ✅ Implemented |
 | POST | `/api/login` | User authentication | ✅ Implemented |
 | GET | `/api/health` | Server health check | ✅ Implemented |
-| GET | `/api/user` | Get current user info | ❌ Needs Implementation |
-| POST | `/api/logout` | User logout | ❌ Needs Implementation |
+| GET | `/api/user` | Get current user info | ✅ Implemented |
+| POST | `/api/logout` | User logout | ✅ Implemented |
 
 ### Login API Details
 

@@ -12,28 +12,49 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
   <style>
-    /* Custom gradient navbar styles */
+    /* Dark theme color scheme matching login page */
+    :root {
+      --bg-primary: #111827; /* gray-900 */
+      --bg-secondary: #1f2937; /* gray-800 */
+      --bg-tertiary: #374151; /* gray-700 */
+      --text-primary: #ffffff;
+      --text-secondary: #d1d5db; /* gray-300 */
+      --text-muted: #9ca3af; /* gray-400 */
+      --border-color: #4b5563; /* gray-600 */
+      --accent-blue: #2563eb; /* blue-600 */
+      --accent-blue-hover: #1d4ed8; /* blue-700 */
+      --accent-green: #059669; /* emerald-600 */
+      --accent-red: #dc2626; /* red-600 */
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Custom navbar styles */
     .navbar-custom {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--bg-secondary);
       padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .navbar-custom .navbar-brand {
-      color: white;
+      color: var(--text-primary);
       font-size: 1.5rem;
       font-weight: bold;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
 
     .navbar-custom .nav-link {
-      color: white !important;
+      color: var(--text-secondary) !important;
       margin: 0 1rem;
       transition: all 0.3s ease;
       font-weight: 500;
     }
 
     .navbar-custom .nav-link:hover {
-      color: #ffd700 !important;
+      color: var(--accent-blue) !important;
       transform: translateY(-2px);
     }
 
@@ -43,74 +64,91 @@
     }
 
     .search-container {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-color: var(--bg-secondary);
       padding: 2rem;
       border-radius: 15px;
       margin-bottom: 2rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
     }
 
     .search-box {
-      border-radius: 25px;
+      border-radius: 8px;
       padding: 1rem 1.5rem;
-      border: 2px solid #e0e0e0;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
       font-size: 1.1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
     }
 
     .search-box:focus {
-      border-color: #667eea;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+      border-color: var(--accent-blue);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
       outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-muted);
     }
 
     .filter-section {
-      background: white;
+      background-color: var(--bg-secondary);
       padding: 1.5rem;
       border-radius: 10px;
       margin-bottom: 2rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
     }
 
     .stats-card {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      background-color: var(--accent-green);
       color: white;
       padding: 1.5rem;
       border-radius: 10px;
       text-align: center;
       margin-bottom: 1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
     }
 
     .game-card {
-      background: white;
+      background-color: var(--bg-secondary);
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
       transition: all 0.3s ease;
     }
 
     .game-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      border-color: var(--accent-blue);
     }
 
     .game-name {
-      color: #667eea;
+      color: var(--accent-blue);
       font-weight: bold;
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
     }
 
     .game-info {
-      color: #666;
+      color: var(--text-secondary);
       margin: 0.25rem 0;
     }
 
+    .game-info strong {
+      color: var(--text-primary);
+    }
+
     .price-tag {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--accent-blue);
       color: white;
       padding: 0.25rem 0.75rem;
       border-radius: 15px;
@@ -121,15 +159,16 @@
     .loading {
       text-align: center;
       padding: 2rem;
-      color: #667eea;
+      color: var(--accent-blue);
     }
 
     .error {
-      background: #f8d7da;
-      color: #721c24;
+      background-color: rgba(220, 38, 38, 0.2);
+      color: var(--accent-red);
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: 8px;
       margin: 1rem 0;
+      border: 1px solid rgba(220, 38, 38, 0.3);
     }
 
     .pagination-container {
@@ -139,20 +178,54 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--accent-blue);
       border: none;
-      border-radius: 25px;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
 
     .btn-primary:hover {
+      background-color: var(--accent-blue-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--border-color);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    .btn-info {
+      background-color: #0891b2;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-info:hover {
+      background-color: #0e7490;
+      transform: translateY(-1px);
     }
 
     .login-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--accent-blue);
       border: none;
-      border-radius: 25px;
+      border-radius: 8px;
       padding: 0.5rem 1.5rem;
       color: white;
       font-weight: 500;
@@ -162,16 +235,16 @@
     }
 
     .login-btn:hover {
+      background-color: var(--accent-blue-hover);
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
       color: white;
       text-decoration: none;
     }
 
     .logout-btn {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      background-color: var(--accent-red);
       border: none;
-      border-radius: 25px;
+      border-radius: 8px;
       padding: 0.5rem 1.5rem;
       color: white;
       font-weight: 500;
@@ -179,14 +252,9 @@
     }
 
     .logout-btn:hover {
+      background-color: #b91c1c;
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
       color: white;
-    }
-
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
     }
 
     .sort-controls {
@@ -196,10 +264,87 @@
       flex-wrap: wrap;
     }
 
+    .form-control {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 8px;
+    }
+
+    .form-control:focus {
+      background-color: var(--bg-tertiary);
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    label {
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    h1, h2, h3 {
+      color: var(--text-primary);
+    }
+
+    .text-center h3 {
+      color: var(--accent-blue);
+    }
+
+    .text-muted {
+      color: var(--text-muted) !important;
+    }
+
+    /* Pagination styling */
+    .pagination .page-link {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 0.5rem 0.75rem;
+      margin: 0 0.125rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    .pagination .page-item.disabled .page-link {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-muted);
+    }
+
     @media (max-width: 768px) {
       .sort-controls {
         flex-direction: column;
         align-items: stretch;
+      }
+      
+      .main-content {
+        padding: 1rem;
+      }
+      
+      .search-container {
+        padding: 1.5rem;
+      }
+      
+      .filter-section {
+        padding: 1rem;
       }
     }
   </style>
@@ -213,8 +358,8 @@
         <ul class="navbar-nav d-flex flex-row align-items-center">
           <li class="nav-item"><a class="nav-link" href="profile.html" onclick="showStats()">Profile</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showGames()">Browse Games</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link" href="privacy.html">Privacy</a></li>
+          <li class="nav-item"><a class="nav-link" href="TOS.html">Terms Of Service</a></li>
           <li class="nav-item ms-3" id="auth-section">
             <!-- Authentication button will be updated by JavaScript -->
           </li>
@@ -227,9 +372,9 @@
     <!-- Welcome Section -->
     <div id="welcome-section" class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-        <h1 class="mb-4 text-center" style="color: #555; font-weight: 300;">Welcome to Steam Games Dashboard</h1>
+        <h1 class="mb-4 text-center" style="color: var(--text-primary); font-weight: 300;">Welcome to Steam Games Dashboard</h1>
         <div class="search-container text-center">
-          <h3 style="color: #667eea; margin-bottom: 1rem;">Search Steam Games</h3>
+          <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Search Steam Games</h3>
           <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Search for games..." />
           <button class="btn btn-primary" onclick="searchGames()">
             <i class="fas fa-search"></i> Search Games
@@ -241,7 +386,7 @@
     <!-- Statistics Section -->
     <div id="stats-section" class="row" style="display: none;">
       <div class="col-12">
-        <h2 class="mb-4 text-center" style="color: #555;">Database Statistics</h2>
+        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Database Statistics</h2>
         <div id="stats-content" class="row">
           <!-- Stats will be loaded here -->
         </div>
@@ -251,7 +396,7 @@
     <!-- Games Section -->
     <div id="games-section" class="row" style="display: none;">
       <div class="col-12">
-        <h2 class="mb-4 text-center" style="color: #555;">Steam Games Database</h2>
+        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Steam Games Database</h2>
         
         <!-- Filters -->
         <div id="filter-section" class="filter-section" style="display: none;">
@@ -357,7 +502,7 @@
       } else {
         // User is not signed in, show Sign In link, hide Sign Out
         authSection.innerHTML = `
-          <a href="/login.html" class="login-btn">
+          <a href="login.html" class="login-btn">
             <i class="fas fa-sign-in-alt"></i> Sign In
           </a>
         `;

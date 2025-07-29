@@ -488,20 +488,42 @@
     // Check authentication and update UI accordingly
     async function checkAuthenticationAndLoadProfile() {
       try {
-        // Check if user is authenticated
-        const authResponse = await fetch('/api/auth/check', {
-          method: 'GET',
-          credentials: 'include'
-        });
-
-        if (!authResponse.ok) {
-          // User is not authenticated - redirect to login
+        // First check if there's a session token or auth cookie
+        const isAuthenticated = checkLocalAuthentication();
+        
+        if (!isAuthenticated) {
+          // No local authentication found - redirect to login
           window.location.href = 'login.html';
           return;
         }
 
-        const authData = await authResponse.json();
-        currentUser = authData.user;
+        // Try to verify authentication with server
+        try {
+          const authResponse = await fetch('/api/auth/check', {
+            method: 'GET',
+            credentials: 'include'
+          });
+
+          if (authResponse.ok) {
+            const authData = await authResponse.json();
+            currentUser = authData.user;
+          } else {
+            // Server auth check failed, but we have local auth - use stored user data
+            currentUser = getStoredUserData();
+            if (!currentUser) {
+              window.location.href = 'login.html';
+              return;
+            }
+          }
+        } catch (error) {
+          // Network error or server unavailable - use stored user data
+          console.log('Server auth check failed, using stored data:', error);
+          currentUser = getStoredUserData();
+          if (!currentUser) {
+            window.location.href = 'login.html';
+            return;
+          }
+        }
 
         // Update navigation to show sign out button
         updateAuthButton(true);
@@ -511,9 +533,74 @@
 
       } catch (error) {
         console.error('Authentication check failed:', error);
-        // Redirect to login on any authentication error
-        window.location.href = 'login.html';
+        // Only redirect if we're sure there's no authentication
+        if (!checkLocalAuthentication()) {
+          window.location.href = 'login.html';
+        } else {
+          // Show error but don't redirect
+          showError();
+        }
       }
+    }
+
+    // Check for local authentication indicators
+    function checkLocalAuthentication() {
+      // Check for authentication token in localStorage
+      const authToken = localStorage.getItem('authToken');
+      if (authToken) return true;
+
+      // Check for session storage
+      const sessionUser = sessionStorage.getItem('currentUser');
+      if (sessionUser) return true;
+
+      // Check for auth cookie (simple check)
+      const hasAuthCookie = document.cookie.split(';').some(cookie => 
+        cookie.trim().startsWith('auth=') || 
+        cookie.trim().startsWith('session=') ||
+        cookie.trim().startsWith('token=')
+      );
+      if (hasAuthCookie) return true;
+
+      // Check URL parameters for recent login
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('logged_in') === 'true') return true;
+
+      return false;
+    }
+
+    // Get stored user data
+    function getStoredUserData() {
+      // Try localStorage first
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        try {
+          return JSON.parse(storedUser);
+        } catch (e) {
+          console.error('Error parsing stored user data:', e);
+        }
+      }
+
+      // Try sessionStorage
+      const sessionUser = sessionStorage.getItem('currentUser');
+      if (sessionUser) {
+        try {
+          return JSON.parse(sessionUser);
+        } catch (e) {
+          console.error('Error parsing session user data:', e);
+        }
+      }
+
+      // Return basic user data if we have auth but no stored data
+      if (checkLocalAuthentication()) {
+        return {
+          id: 'unknown',
+          username: 'Steam User',
+          email: '',
+          steamId: ''
+        };
+      }
+
+      return null;
     }
 
     // Update authentication button based on login status
@@ -538,22 +625,53 @@
     // Load user profile data
     async function loadUserProfile() {
       try {
-        // Load profile data
+        // Try to load profile data from server
         const profileResponse = await fetch(`/api/profile/${currentUser.id}`, {
           method: 'GET',
           credentials: 'include'
         });
 
-        if (!profileResponse.ok) {
-          throw new Error('Failed to load profile');
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          displayProfile(profileData);
+        } else {
+          // Server request failed, show profile with basic user data
+          console.log('Server profile request failed, showing basic profile');
+          displayProfile({
+            username: currentUser.username || 'Steam User',
+            steamId: currentUser.steamId || 'Not connected',
+            isOnline: false,
+            stats: {
+              gamesOwned: 0,
+              hoursPlayed: 0,
+              achievements: 0,
+              totalSpent: 0
+            },
+            gamingStats: [],
+            favoriteGenres: [],
+            recentActivity: [],
+            badges: []
+          });
         }
-
-        const profileData = await profileResponse.json();
-        displayProfile(profileData);
 
       } catch (error) {
         console.error('Error loading profile:', error);
-        showError();
+        // Show basic profile even if server is unavailable
+        displayProfile({
+          username: currentUser.username || 'Steam User',
+          steamId: currentUser.steamId || 'Not connected',
+          isOnline: false,
+          stats: {
+            gamesOwned: 0,
+            hoursPlayed: 0,
+            achievements: 0,
+            totalSpent: 0
+          },
+          gamingStats: [],
+          favoriteGenres: [],
+          recentActivity: [],
+          badges: []
+        });
       }
     }
 
@@ -741,16 +859,26 @@
     async function signOut() {
       if (confirm('Are you sure you want to sign out?')) {
         try {
+          // Try to sign out from server
           await fetch('/api/auth/logout', {
             method: 'POST',
             credentials: 'include'
           });
-          window.location.href = 'index.html';
         } catch (error) {
-          console.error('Logout error:', error);
-          // Fallback: clear local state and redirect
-          window.location.href = 'index.html';
+          console.log('Server logout failed, clearing local data:', error);
         }
+        
+        // Clear local authentication data
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
+        
+        // Clear auth cookies
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+        
+        window.location.href = 'index.html';
       }
     }
 

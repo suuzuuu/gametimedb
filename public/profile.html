@@ -628,10 +628,10 @@
       // FIRST: Check isLoggedIn localStorage variable
       const isLoggedIn = localStorage.getItem('isLoggedIn');
       
-      if (!isLoggedIn || isLoggedIn !== 'true') {
-        console.log('User not logged in (isLoggedIn not found or false), redirecting to login');
-        window.location.href = 'login.html';
-        return;
+      if (isLoggedIn !== 'true') {
+          console.log('User not logged in, redirecting to login');
+          window.location.href = 'login.html';
+          return;
       }
       
       console.log('User is logged in, proceeding to load profile');

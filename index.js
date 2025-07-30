@@ -67,7 +67,7 @@ app.post('/api/login', async (req, res) => {
 
     // Query user from database
     const [rows] = await pool.execute(
-      'SELECT id, username, password_hash, steam_id FROM users WHERE username = ?',
+      'SELECT id, username, password_hash FROM users WHERE username = ?',
       [username]
     );
 
@@ -97,8 +97,7 @@ app.post('/api/login', async (req, res) => {
       message: 'Login successful',
       user: {
         username: user.username,
-        id: user.id,
-        steamId: user.steam_id
+        id: user.id
       }
     });
 

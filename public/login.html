@@ -133,6 +133,7 @@
                     localStorage.setItem('username', data.user.username);
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('user', JSON.stringify(data.steamId));                    
                     
                     // Show success message
                     successMessage.textContent = `${data.message || 'Login successful!'} Redirecting to homepage...`;

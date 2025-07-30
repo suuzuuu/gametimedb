@@ -388,6 +388,7 @@
       display: flex;
       align-items: center;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     .game-card:hover {
@@ -454,6 +455,128 @@
       color: var(--accent-green);
     }
 
+    /* Steam Games Search and Sort Styles */
+    .search-container {
+      background-color: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .search-box {
+      border-radius: 25px;
+      padding: 0.75rem 1.5rem;
+      border: 2px solid var(--border-color);
+      font-size: 1rem;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .search-box:focus {
+      border-color: var(--accent-blue);
+      outline: none;
+      background-color: var(--bg-primary);
+    }
+
+    .form-control {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 8px;
+    }
+
+    .form-control:focus {
+      background-color: var(--bg-primary);
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.3);
+    }
+
+    .form-control option {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .game-detail-modal .modal-content {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .game-detail-modal .modal-header {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .game-detail-modal .modal-title {
+      color: white;
+    }
+
+    .game-detail-modal .btn-close {
+      filter: invert(1);
+    }
+
+    .game-header-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .detail-stat {
+      background-color: var(--bg-tertiary);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    .sort-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .playtime-badge {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Tab Navigation */
+    .nav-tabs {
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs .nav-link {
+      color: var(--text-secondary);
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 1rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .nav-tabs .nav-link.active {
+      color: var(--accent-blue);
+      background-color: transparent;
+      border-color: var(--accent-blue);
+    }
+
     @media (max-width: 768px) {
       .profile-stats {
         gap: 1rem;
@@ -473,6 +596,21 @@
         float: none;
         display: block;
         margin-top: 0.5rem;
+      }
+      
+      .sort-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .game-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .game-image {
+        margin-right: 0;
+        margin-bottom: 1rem;
       }
     }
   </style>
@@ -548,70 +686,138 @@
         </div>
       </div>
 
-      <div class="row">
-        <!-- Gaming Statistics -->
-        <div class="col-lg-8">
-          <div class="stats-card">
-            <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
-            <div id="gamingStats">
-              <div class="no-data">Loading gaming statistics...</div>
-            </div>
-          </div>
+      <!-- Tab Navigation -->
+      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+            <i class="fas fa-chart-bar me-2"></i>Overview
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button" role="tab">
+            <i class="fas fa-gamepad me-2"></i>My Games
+          </button>
+        </li>
+      </ul>
 
-          <!-- Recent Games -->
-          <div class="stats-card">
-            <h3><i class="fas fa-gamepad me-2"></i>Recent Games</h3>
-            <div id="recentGames">
-              <div class="no-data">Loading recent games...</div>
-            </div>
-          </div>
+      <!-- Tab Content -->
+      <div class="tab-content" id="profileTabContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+          <div class="row">
+            <!-- Gaming Statistics -->
+            <div class="col-lg-8">
+              <div class="stats-card">
+                <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
+                <div id="gamingStats">
+                  <div class="no-data">Loading gaming statistics...</div>
+                </div>
+              </div>
 
-          <!-- Favorite Genres -->
-          <div class="stats-card">
-            <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
-            <div id="favoriteGenres">
-              <div class="no-data">Loading genre preferences...</div>
+              <!-- Recent Games -->
+              <div class="stats-card">
+                <h3><i class="fas fa-gamepad me-2"></i>Recent Games</h3>
+                <div id="recentGames">
+                  <div class="no-data">Loading recent games...</div>
+                </div>
+              </div>
+
+              <!-- Favorite Genres -->
+              <div class="stats-card">
+                <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
+                <div id="favoriteGenres">
+                  <div class="no-data">Loading genre preferences...</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+              <!-- Recent Activity -->
+              <div class="stats-card">
+                <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
+                <div id="recentActivity">
+                  <div class="no-data">Loading recent activity...</div>
+                </div>
+              </div>
+
+              <!-- Badges & Achievements -->
+              <div class="stats-card">
+                <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
+                <div id="recentBadges" class="text-center">
+                  <div class="no-data">Loading badges...</div>
+                </div>
+              </div>
+
+              <!-- Quick Actions -->
+              <div class="stats-card">
+                <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
+                
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary" onclick="refreshSteamData()" id="refreshBtn">
+                    <i class="fas fa-sync me-2"></i>Refresh Steam Data
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="viewLibrary()">
+                    <i class="fas fa-book me-2"></i>View Library
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="exportData()">
+                    <i class="fas fa-download me-2"></i>Export Data
+                  </button>
+                  <button class="btn btn-outline-primary" onclick="connectSteam()" id="connectSteamBtn" style="display: none;">
+                    <i class="fab fa-steam me-2"></i>Connect Steam
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-          <!-- Recent Activity -->
-          <div class="stats-card">
-            <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
-            <div id="recentActivity">
-              <div class="no-data">Loading recent activity...</div>
+        <!-- Games Tab -->
+        <div class="tab-pane fade" id="games" role="tabpanel">
+          <!-- Search and Sort Controls -->
+          <div class="search-container">
+            <div class="row">
+              <div class="col-md-6">
+                <input type="text" id="search-input" class="form-control search-box" placeholder="Search your games...">
+              </div>
+              <div class="col-md-6">
+                <div class="sort-controls">
+                  <select id="sort-by" class="form-control">
+                    <option value="name">Sort by Name</option>
+                    <option value="playtime">Sort by Playtime</option>
+                    <option value="lastplayed">Sort by Last Played</option>
+                  </select>
+                  <select id="sort-order" class="form-control">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Badges & Achievements -->
+          <!-- Games List -->
           <div class="stats-card">
-            <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
-            <div id="recentBadges" class="text-center">
-              <div class="no-data">Loading badges...</div>
+            <h3><i class="fas fa-gamepad me-2"></i>Your Steam Library</h3>
+            <div id="games-list">
+              <div class="no-data">Click "My Games" tab to load your Steam library...</div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Quick Actions -->
-          <div class="stats-card">
-            <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
-            
-            <div class="d-grid gap-2">
-              <button class="btn btn-primary" onclick="refreshSteamData()" id="refreshBtn">
-                <i class="fas fa-sync me-2"></i>Refresh Steam Data
-              </button>
-              <button class="btn btn-outline-primary" onclick="viewLibrary()">
-                <i class="fas fa-book me-2"></i>View Library
-              </button>
-              <button class="btn btn-outline-primary" onclick="exportData()">
-                <i class="fas fa-download me-2"></i>Export Data
-              </button>
-              <button class="btn btn-outline-primary" onclick="connectSteam()" id="connectSteamBtn" style="display: none;">
-                <i class="fab fa-steam me-2"></i>Connect Steam
-              </button>
-            </div>
-          </div>
+  <!-- Game Detail Modal -->
+  <div class="modal fade game-detail-modal" id="gameDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="gameDetailTitle">Game Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="gameDetailBody">
+          <!-- Game details will be loaded here -->
         </div>
       </div>
     </div>
@@ -622,6 +828,9 @@
   <script>
     let currentUser = null;
     let steamData = null;
+    let allGames = [];
+    let filteredGames = [];
+    let currentSort = { by: 'name', order: 'asc' };
 
     // Check authentication and load profile on page load
     document.addEventListener('DOMContentLoaded', function() {
@@ -636,9 +845,19 @@
       
       console.log('User is logged in, proceeding to load profile');
       checkAuthenticationAndLoadProfile();
+
+      // Add event listeners for games tab
+      document.getElementById('search-input').addEventListener('input', filterGames);
+      document.getElementById('sort-by').addEventListener('change', sortGames);
+      document.getElementById('sort-order').addEventListener('change', sortGames);
+
+      // Add tab change listener
+      document.getElementById('games-tab').addEventListener('shown.bs.tab', function (e) {
+        loadMyGames();
+      });
     });
 
-    // Enhanced authentication check with better Steam integration
+    // Enhanced authentication check
     async function checkAuthenticationAndLoadProfile() {
       try {
         // Step 1: Check local authentication
@@ -646,18 +865,15 @@
         
         if (!localAuth) {
           console.log('No local authentication found, redirecting to login');
-          redirectToLogin();
+          //redirectToLogin();
           return;
         }
 
-        // Step 2: Verify with server and get user data
-        await verifyServerAuthentication();
-
-        // Step 3: Update UI for authenticated user
+        // Step 2: Update UI for authenticated user
         updateAuthButton(true);
 
-        // Step 4: Load Steam profile data
-        await loadSteamProfile();
+        // Step 3: Load profile data
+        await loadProfileData();
 
       } catch (error) {
         console.error('Authentication/profile loading failed:', error);
@@ -715,59 +931,44 @@
       return null;
     }
 
-    // Verify authentication with server
-    async function verifyServerAuthentication() {
+    // Load profile data
+    async function loadProfileData() {
       try {
-        const response = await fetch('/api/auth/verify', {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          currentUser = data.user;
-          
-          // Store updated user data
-          localStorage.setItem('currentUser', JSON.stringify(currentUser));
-          
-          console.log('Server authentication verified:', currentUser);
-          return data;
-        } else if (response.status === 401) {
-          throw new Error('Authentication expired');
-        } else {
-          throw new Error('Server authentication failed');
-        }
-      } catch (error) {
-        console.log('Server verification failed, using stored data:', error.message);
-        
-        // Fallback to stored user data
+        // Get stored user data
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
           try {
             currentUser = JSON.parse(storedUser);
-            return { user: currentUser };
           } catch (e) {
-            throw new Error('No valid user data available');
+            console.error('Error parsing stored user data:', e);
           }
-        } else {
-          throw error;
         }
+
+        // If no stored user, create basic user object
+        if (!currentUser) {
+          currentUser = {
+            id: 'user_' + Date.now(),
+            username: 'Steam User',
+            steamId: localStorage.getItem('steam_id') || null
+          };
+        }
+
+        // Load Steam profile data if available
+        if (currentUser?.steamId) {
+          await loadSteamProfile();
+        } else {
+          displayProfileWithoutSteam();
+        }
+
+      } catch (error) {
+        console.error('Error loading profile data:', error);
+        displayProfileWithoutSteam();
       }
     }
 
     // Load Steam profile data
     async function loadSteamProfile() {
       try {
-        if (!currentUser?.steamId) {
-          displayProfileWithoutSteam();
-          return;
-        }
-
-        // Show loading state
         updateLoadingText('Loading Steam profile data...');
 
         // Try to fetch Steam data from your backend
@@ -830,7 +1031,7 @@
       document.getElementById('gamesOwned').textContent = data.game_count || 0;
       document.getElementById('hoursPlayed').textContent = formatNumber(Math.round((data.total_playtime || 0) / 60));
       document.getElementById('achievements').textContent = data.total_achievements || 0;
-      document.getElementById('totalSpent').textContent = `$${formatNumber(data.total_spent || 0)}`;
+      document.getElementById('totalSpent').textContent = `${formatNumber(data.total_spent || 0)}`;
 
       // Load additional Steam data
       loadRecentGames();
@@ -869,6 +1070,204 @@
       // Show placeholder content
       showPlaceholderContent();
       showDisconnectedActions();
+    }
+
+    // Load user's Steam games
+    async function loadMyGames() {
+      try {
+        const steamId = currentUser?.steamId || localStorage.getItem('steam_id');
+        
+        if (!steamId) {
+          document.getElementById('games-list').innerHTML = `
+            <div class="no-data">
+              <i class="fas fa-exclamation-triangle"></i> 
+              No Steam ID found. Please connect your Steam account first.
+            </div>
+          `;
+          return;
+        }
+
+        // Show loading
+        document.getElementById('games-list').innerHTML = `
+          <div class="no-data">
+            <i class="fas fa-spinner fa-spin"></i> Loading your Steam games...
+          </div>
+        `;
+
+        // Send the steam_id as a query parameter
+        const response = await fetch(`/api/owned-games?steam_id=${steamId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          allGames = data.games || [];
+          filteredGames = [...allGames];
+          
+          displayGames();
+        } else {
+          document.getElementById('games-list').innerHTML = `
+            <div class="no-data text-warning">
+              <i class="fas fa-exclamation-triangle"></i> 
+              Error: ${data.message}
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading games:', error);
+        document.getElementById('games-list').innerHTML = `
+          <div class="no-data text-danger">
+            <i class="fas fa-exclamation-triangle"></i> 
+            Error loading games. Please try again.
+          </div>
+        `;
+      }
+    }
+
+    // Display games in the games tab
+    function displayGames() {
+      const gamesListDiv = document.getElementById('games-list');
+      
+      if (filteredGames.length === 0) {
+        gamesListDiv.innerHTML = '<div class="no-data">No games found.</div>';
+        return;
+      }
+
+      gamesListDiv.innerHTML = filteredGames.map(game => {
+        const playtimeHours = Math.floor(game.playtime_forever / 60);
+        const playtimeMinutes = game.playtime_forever % 60;
+        const playtimeText = playtimeHours > 0 ? 
+          `${playtimeHours}h ${playtimeMinutes}m` : 
+          `${playtimeMinutes}m`;
+        
+        const lastPlayedText = game.rtime_last_played ? 
+          new Date(game.rtime_last_played * 1000).toLocaleDateString() : 
+          'Never';
+
+        const thumbnailUrl = game.img_icon_url ? 
+          `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg` :
+          'https://via.placeholder.com/64x64/2563eb/ffffff?text=Game';
+
+        return `
+          <div class="game-card" onclick="showGameDetail(${game.appid})">
+            <div class="game-image" style="background-image: url('${thumbnailUrl}')"
+                 onerror="this.style.backgroundImage='url(https://via.placeholder.com/64x64/2563eb/ffffff?text=Game)'"></div>
+            <div class="flex-grow-1">
+              <div class="fw-bold">${game.name}</div>
+              <div class="text-muted small">
+                App ID: ${game.appid} • Last Played: ${lastPlayedText}
+              </div>
+              <div class="playtime-badge">${playtimeText}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Show game detail modal
+    function showGameDetail(appid) {
+      const game = allGames.find(g => g.appid === appid);
+      if (!game) return;
+
+      const playtimeHours = Math.floor(game.playtime_forever / 60);
+      const playtimeMinutes = game.playtime_forever % 60;
+      const playtimeText = playtimeHours > 0 ? 
+        `${playtimeHours} hours ${playtimeMinutes} minutes` : 
+        `${playtimeMinutes} minutes`;
+
+      const lastPlayedText = game.rtime_last_played ? 
+        new Date(game.rtime_last_played * 1000).toLocaleString() : 
+        'Never played';
+
+      const headerImageUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`;
+
+      document.getElementById('gameDetailTitle').textContent = game.name;
+      document.getElementById('gameDetailBody').innerHTML = `
+        <img src="${headerImageUrl}" alt="${game.name}" class="game-header-image" 
+             onerror="this.style.display='none'">
+        
+        <div class="detail-stat">
+          <strong>Steam App ID:</strong> ${game.appid}
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Total Playtime:</strong> ${playtimeText}
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Windows Playtime:</strong> ${Math.floor(game.playtime_windows_forever / 60)}h ${game.playtime_windows_forever % 60}m
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Mac Playtime:</strong> ${Math.floor(game.playtime_mac_forever / 60)}h ${game.playtime_mac_forever % 60}m
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Linux Playtime:</strong> ${Math.floor(game.playtime_linux_forever / 60)}h ${game.playtime_linux_forever % 60}m
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Steam Deck Playtime:</strong> ${Math.floor(game.playtime_deck_forever / 60)}h ${game.playtime_deck_forever % 60}m
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Community Stats:</strong> ${game.has_community_visible_stats ? 'Available' : 'Not Available'}
+        </div>
+        
+        <div class="detail-stat">
+          <strong>Last Played:</strong> ${lastPlayedText}
+        </div>
+      `;
+
+      const modal = new bootstrap.Modal(document.getElementById('gameDetailModal'));
+      modal.show();
+    }
+
+    // Filter games based on search
+    function filterGames() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      
+      filteredGames = allGames.filter(game => 
+        game.name.toLowerCase().includes(searchTerm)
+      );
+      
+      sortGames();
+    }
+
+    // Sort games
+    function sortGames() {
+      const sortBy = document.getElementById('sort-by').value;
+      const sortOrder = document.getElementById('sort-order').value;
+      
+      currentSort = { by: sortBy, order: sortOrder };
+      
+      filteredGames.sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (sortBy) {
+          case 'name':
+            aValue = a.name.toLowerCase();
+            bValue = b.name.toLowerCase();
+            break;
+          case 'playtime':
+            aValue = a.playtime_forever;
+            bValue = b.playtime_forever;
+            break;
+          case 'lastplayed':
+            aValue = a.rtime_last_played || 0;
+            bValue = b.rtime_last_played || 0;
+            break;
+          default:
+            aValue = a.name.toLowerCase();
+            bValue = b.name.toLowerCase();
+        }
+        
+        if (sortOrder === 'desc') {
+          return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+        } else {
+          return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+        }
+      });
+      
+      displayGames();
     }
 
     // Load recent games from Steam
@@ -1273,7 +1672,10 @@
     }
 
     function viewLibrary() {
-      window.location.href = 'index.html#library';
+      // Switch to games tab
+      const gamesTab = document.getElementById('games-tab');
+      const tab = new bootstrap.Tab(gamesTab);
+      tab.show();
     }
 
     function exportData() {
@@ -1290,6 +1692,7 @@
           joinDate: currentUser.createdAt
         },
         steamData: steamData || null,
+        games: allGames || [],
         exportDate: new Date().toISOString(),
         version: '1.0'
       };
@@ -1325,6 +1728,8 @@
         localStorage.removeItem('authToken');
         localStorage.removeItem('steam_auth_token');
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('steam_id');
         sessionStorage.clear();
         
         // Clear cookies

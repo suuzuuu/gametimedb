@@ -11,54 +11,30 @@
   <!-- Link to Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <style>
-    :root {
-      --bg-primary: #111827; 
-      --bg-secondary: #1f2937;
-      --bg-tertiary: #374151; 
-      --text-primary: #ffffff;
-      --text-secondary: #d1d5db; 
-      --text-muted: #9ca3af; 
-      --border-color: #4b5563; 
-      --accent-blue: #2563eb; 
-      --accent-blue-hover: #1d4ed8; 
-      --accent-green: #059669; 
-      --accent-red: #dc2626; 
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
-
-    /* Custom navbar styles */
+    <style>
+    /* Custom gradient navbar styles */
     .navbar-custom {
-      background-color: var(--bg-secondary);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 1rem 0;
-      border-bottom: 1px solid var(--border-color);
     }
 
     .navbar-custom .navbar-brand {
-      color: var(--text-primary);
+      color: white;
       font-size: 1.5rem;
       font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
 
     .navbar-custom .nav-link {
-      color: var(--text-secondary) !important;
+      color: white !important;
       margin: 0 1rem;
       transition: all 0.3s ease;
       font-weight: 500;
     }
 
     .navbar-custom .nav-link:hover {
-      color: var(--accent-blue) !important;
+      color: #ffd700 !important;
       transform: translateY(-2px);
-    }
-
-    .navbar-custom .nav-link[style*="color: #ffd700"] {
-      color: var(--accent-blue) !important;
     }
 
     .main-content {
@@ -66,455 +42,127 @@
       padding: 2rem;
     }
 
-    .loading-spinner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 50vh;
-      flex-direction: column;
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
     }
 
-    .spinner-border-custom {
-      width: 3rem;
-      height: 3rem;
-      border: 0.3rem solid rgba(37, 99, 235, 0.3);
-      border-top: 0.3rem solid var(--accent-blue);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      margin-top: 1rem;
-      color: var(--accent-blue);
-      font-weight: 500;
-    }
-
-    .error-message {
-      text-align: center;
-      padding: 3rem;
-      color: var(--accent-red);
-    }
-
-    .profile-header {
-      background-color: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 3rem 2rem;
-      border-radius: 15px;
-      margin-bottom: 2rem;
-      border: 1px solid var(--border-color);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .profile-header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -50%;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
-      transform: rotate(45deg);
-    }
-
-    .profile-avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid var(--accent-blue);
-      background-color: var(--bg-tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: var(--accent-blue);
-      margin-bottom: 1rem;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .profile-name {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: var(--text-primary);
-    }
-
-    .profile-status {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-    }
-
-    .profile-stats {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .profile-stat {
-      text-align: center;
-      background-color: rgba(37, 99, 235, 0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      border: 1px solid rgba(37, 99, 235, 0.2);
-      min-width: 120px;
-    }
-
-    .profile-stat-number {
-      font-size: 1.5rem;
-      font-weight: bold;
-      display: block;
-      color: var(--text-primary);
-    }
-
-    .profile-stat-label {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .stats-card {
-      background-color: var(--bg-secondary);
+    .games-header {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       padding: 2rem;
       border-radius: 15px;
       margin-bottom: 2rem;
-      border: 1px solid var(--border-color);
-      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
     }
 
-    .stats-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-blue);
-    }
-
-    .stats-card h3 {
-      color: var(--accent-blue);
-      margin-bottom: 1.5rem;
-      font-weight: bold;
-    }
-
-    .stat-item {
-      background-color: var(--bg-tertiary);
-      padding: 1.5rem;
+    .game-item {
+      background: white;
       border-radius: 10px;
+      padding: 1.5rem;
       margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
-      border: 1px solid var(--border-color);
-    }
-
-    .stat-item:hover {
-      transform: translateX(5px);
-      border-color: var(--accent-blue);
-    }
-
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      background-color: var(--accent-blue);
-      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.2rem;
-      margin-right: 1rem;
+      text-decoration: none;
+      color: inherit;
     }
 
-    .stat-content {
+    .game-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .game-thumbnail {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .game-info {
       flex: 1;
     }
 
-    .stat-title {
+    .game-title {
+      color: #667eea;
       font-weight: bold;
-      color: var(--text-primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-subtitle {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .stat-value {
       font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--accent-blue);
+      margin-bottom: 0.5rem;
     }
 
-    .activity-card {
-      background-color: var(--bg-tertiary);
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--accent-blue);
-      transition: all 0.3s ease;
-    }
-
-    .activity-card:hover {
-      transform: translateY(-1px);
-      border-left-color: var(--accent-green);
-    }
-
-    .activity-icon {
-      display: inline-block;
-      width: 30px;
-      height: 30px;
-      background-color: var(--accent-green);
-      border-radius: 50%;
-      text-align: center;
-      line-height: 30px;
-      color: white;
-      margin-right: 1rem;
-      font-size: 0.8rem;
-    }
-
-    .activity-time {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      float: right;
-    }
-
-    .btn-primary {
-      background-color: var(--accent-blue);
-      border: none;
-      border-radius: 8px;
-      padding: 0.75rem 2rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background-color: var(--accent-blue-hover);
-      transform: translateY(-2px);
-    }
-
-    .btn-outline-primary {
-      border: 2px solid var(--accent-blue);
-      color: var(--accent-blue);
-      background-color: transparent;
-      border-radius: 8px;
-      padding: 0.75rem 2rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .btn-outline-primary:hover {
-      background-color: var(--accent-blue);
-      border-color: var(--accent-blue);
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .logout-btn {
-      background-color: var(--accent-red);
-      border: none;
-      border-radius: 8px;
-      padding: 0.5rem 1.5rem;
-      color: white;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .logout-btn:hover {
-      background-color: #b91c1c;
-      transform: translateY(-2px);
-      color: white;
-    }
-
-    .btn-outline-light {
-      border: 2px solid var(--text-secondary);
-      color: var(--text-secondary);
-      background-color: transparent;
-      border-radius: 8px;
-      padding: 0.5rem 1.5rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .btn-outline-light:hover {
-      background-color: var(--text-secondary);
-      border-color: var(--text-secondary);
-      color: var(--bg-primary);
-    }
-
-    .badge-custom {
-      background-color: var(--accent-green);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      margin: 0.25rem;
-      display: inline-block;
-    }
-
-    .progress-custom {
-      height: 8px;
-      border-radius: 10px;
-      background-color: var(--bg-tertiary);
-      overflow: hidden;
-    }
-
-    .progress-bar-custom {
-      height: 100%;
-      background-color: var(--accent-blue);
-      border-radius: 10px;
-      transition: width 0.3s ease;
-    }
-
-    .no-data {
-      text-align: center;
-      color: var(--text-muted);
-      font-style: italic;
-      padding: 2rem;
-    }
-
-    .game-card {
-      background-color: var(--bg-tertiary);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .game-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-blue);
-    }
-
-    .game-image {
-      width: 60px;
-      height: 60px;
-      background-color: var(--accent-blue);
-      border-radius: 8px;
-      margin-right: 1rem;
-      flex-shrink: 0;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .steam-connection-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
+    .game-stats {
+      color: #666;
       font-size: 0.9rem;
+    }
+
+    .playtime-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      display: inline-block;
       margin-top: 0.5rem;
     }
 
-    .steam-connected {
-      background-color: rgba(5, 150, 105, 0.2);
-      color: var(--accent-green);
-      border: 1px solid rgba(5, 150, 105, 0.3);
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #667eea;
     }
 
-    .steam-disconnected {
-      background-color: rgba(220, 38, 38, 0.2);
-      color: var(--accent-red);
-      border: 1px solid rgba(220, 38, 38, 0.3);
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 5px;
+      margin: 1rem 0;
     }
 
-    .text-success {
-      color: var(--accent-green) !important;
-    }
-
-    .text-secondary {
-      color: var(--text-muted) !important;
-    }
-
-    .text-muted {
-      color: var(--text-muted) !important;
-    }
-
-    .fw-bold {
-      color: var(--text-primary);
-    }
-
-    .flex-grow-1 .fw-bold {
-      color: var(--text-primary);
-    }
-
-    .alert-success {
-      background-color: rgba(5, 150, 105, 0.2);
-      border: 1px solid rgba(5, 150, 105, 0.3);
-      color: var(--accent-green);
-    }
-
-    /* Steam Games Search and Sort Styles */
     .search-container {
-      background-color: var(--bg-secondary);
+      background: white;
       padding: 1.5rem;
       border-radius: 10px;
       margin-bottom: 2rem;
-      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
 
     .search-box {
       border-radius: 25px;
       padding: 0.75rem 1.5rem;
-      border: 2px solid var(--border-color);
+      border: 2px solid #e0e0e0;
       font-size: 1rem;
-      background-color: var(--bg-tertiary);
-      color: var(--text-primary);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       transition: all 0.3s ease;
     }
 
     .search-box:focus {
-      border-color: var(--accent-blue);
+      border-color: #667eea;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
       outline: none;
-      background-color: var(--bg-primary);
     }
 
-    .form-control {
-      background-color: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      color: var(--text-primary);
-      border-radius: 8px;
-    }
-
-    .form-control:focus {
-      background-color: var(--bg-primary);
-      border-color: var(--accent-blue);
-      color: var(--text-primary);
-      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.3);
-    }
-
-    .form-control option {
-      background-color: var(--bg-tertiary);
-      color: var(--text-primary);
-    }
-
-    .game-detail-modal .modal-content {
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-    }
-
-    .game-detail-modal .modal-header {
-      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .game-detail-modal .modal-title {
+    .games-stats {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
       color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      text-align: center;
     }
 
-    .game-detail-modal .btn-close {
-      filter: invert(1);
+    /* Game Detail Modal Styles */
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px 10px 0 0;
     }
 
     .game-header-image {
@@ -526,11 +174,17 @@
     }
 
     .detail-stat {
-      background-color: var(--bg-tertiary);
+      background: #f8f9fa;
       padding: 0.75rem;
       border-radius: 8px;
       margin-bottom: 0.5rem;
-      border-left: 4px solid var(--accent-blue);
+      border-left: 4px solid #667eea;
+    }
+
+    .last-played {
+      color: #666;
+      font-size: 0.9rem;
+      font-style: italic;
     }
 
     .sort-controls {
@@ -538,77 +192,21 @@
       gap: 1rem;
       align-items: center;
       flex-wrap: wrap;
-    }
-
-    .playtime-badge {
-      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 15px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      display: inline-block;
-      margin-top: 0.5rem;
-    }
-
-    /* Tab Navigation */
-    .nav-tabs {
-      border-bottom: 2px solid var(--border-color);
-      margin-bottom: 2rem;
-    }
-
-    .nav-tabs .nav-link {
-      color: var(--text-secondary);
-      border: none;
-      border-bottom: 2px solid transparent;
-      padding: 1rem 1.5rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .nav-tabs .nav-link:hover {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
-
-    .nav-tabs .nav-link.active {
-      color: var(--accent-blue);
-      background-color: transparent;
-      border-color: var(--accent-blue);
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 768px) {
-      .profile-stats {
-        gap: 1rem;
-      }
-      
-      .profile-stat {
-        min-width: 100px;
-      }
-      
-      .stat-item {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-      }
-      
-      .activity-time {
-        float: none;
-        display: block;
-        margin-top: 0.5rem;
-      }
-      
       .sort-controls {
         flex-direction: column;
         align-items: stretch;
       }
       
-      .game-card {
+      .game-item {
         flex-direction: column;
         text-align: center;
       }
       
-      .game-image {
+      .game-thumbnail {
         margin-right: 0;
         margin-bottom: 1rem;
       }
@@ -634,187 +232,66 @@
     </div>
   </nav>
 
-  <div class="container main-content">
-    <!-- Loading State -->
-    <div id="loadingState" class="loading-spinner">
-      <div class="spinner-border-custom"></div>
-      <div class="loading-text">Loading your Steam profile...</div>
+ <div class="container main-content">
+    <!-- Games Header -->
+    <div class="games-header">
+      <h1 style="color: #667eea; margin-bottom: 1rem;">My Steam Games</h1>
+      <p class="mb-0" style="color: #666;">Your personal Steam library</p>
     </div>
 
-    <!-- Error State -->
-    <div id="errorState" class="error-message d-none">
-      <h3><i class="fas fa-exclamation-triangle me-2"></i>Unable to Load Profile</h3>
-      <p id="errorMessage">Please make sure you are logged in and have connected your Steam account.</p>
-      <div class="d-flex gap-2 justify-content-center">
-        <button class="btn btn-primary" onclick="window.location.href='login.html'">Go to Login</button>
-        <button class="btn btn-outline-primary" onclick="retryLoadProfile()">Retry</button>
+    <!-- Games Stats -->
+    <div id="games-stats" class="games-stats" style="display: none;">
+      <div class="row">
+        <div class="col-md-4">
+          <h4 id="total-games">0</h4>
+          <p>Total Games</p>
+        </div>
+        <div class="col-md-4">
+          <h4 id="total-playtime">0h</h4>
+          <p>Total Playtime</p>
+        </div>
+        <div class="col-md-4">
+          <h4 id="avg-playtime">0h</h4>
+          <p>Average Playtime</p>
+        </div>
       </div>
     </div>
 
-    <!-- Profile Content -->
-    <div id="profileContent" class="d-none">
-      <!-- Profile Header -->
-      <div class="profile-header text-center">
-        <div class="profile-avatar mx-auto" id="profileAvatar">
-          <i class="fas fa-user"></i>
+    <!-- Search and Sort Controls -->
+    <div class="search-container">
+      <div class="row">
+        <div class="col-md-6">
+          <input type="text" id="search-input" class="form-control search-box" placeholder="Search your games...">
         </div>
-        <h1 class="profile-name" id="profileName">Loading...</h1>
-        <p class="profile-status" id="profileStatus">
-          <i class="fas fa-circle text-secondary"></i> Loading...
-        </p>
-        <div class="steam-connection-status steam-disconnected" id="steamStatus">
-          <i class="fab fa-steam"></i>
-          <span>Checking Steam connection...</span>
-        </div>
-        <div class="profile-stats">
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="gamesOwned">-</span>
-            <span class="profile-stat-label">Games Owned</span>
-          </div>
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="hoursPlayed">-</span>
-            <span class="profile-stat-label">Hours Played</span>
-          </div>
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="achievements">-</span>
-            <span class="profile-stat-label">Achievements</span>
-          </div>
-          <div class="profile-stat">
-            <span class="profile-stat-number" id="totalSpent">$-</span>
-            <span class="profile-stat-label">Total Spent</span>
+        <div class="col-md-6">
+          <div class="sort-controls">
+            <select id="sort-by" class="form-control">
+              <option value="name">Sort by Name</option>
+              <option value="playtime">Sort by Playtime</option>
+              <option value="lastplayed">Sort by Last Played</option>
+            </select>
+            <select id="sort-order" class="form-control">
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Tab Navigation -->
-      <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-            <i class="fas fa-chart-bar me-2"></i>Overview
-          </button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button" role="tab">
-            <i class="fas fa-gamepad me-2"></i>My Games
-          </button>
-        </li>
-      </ul>
-
-      <!-- Tab Content -->
-      <div class="tab-content" id="profileTabContent">
-        <!-- Overview Tab -->
-        <div class="tab-pane fade show active" id="overview" role="tabpanel">
-          <div class="row">
-            <!-- Gaming Statistics -->
-            <div class="col-lg-8">
-              <div class="stats-card">
-                <h3><i class="fas fa-chart-bar me-2"></i>Gaming Statistics</h3>
-                <div id="gamingStats">
-                  <div class="no-data">Loading gaming statistics...</div>
-                </div>
-              </div>
-
-              <!-- Recent Games -->
-              <div class="stats-card">
-                <h3><i class="fas fa-gamepad me-2"></i>Recent Games</h3>
-                <div id="recentGames">
-                  <div class="no-data">Loading recent games...</div>
-                </div>
-              </div>
-
-              <!-- Favorite Genres -->
-              <div class="stats-card">
-                <h3><i class="fas fa-heart me-2"></i>Favorite Genres</h3>
-                <div id="favoriteGenres">
-                  <div class="no-data">Loading genre preferences...</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-              <!-- Recent Activity -->
-              <div class="stats-card">
-                <h3><i class="fas fa-history me-2"></i>Recent Activity</h3>
-                <div id="recentActivity">
-                  <div class="no-data">Loading recent activity...</div>
-                </div>
-              </div>
-
-              <!-- Badges & Achievements -->
-              <div class="stats-card">
-                <h3><i class="fas fa-medal me-2"></i>Recent Badges</h3>
-                <div id="recentBadges" class="text-center">
-                  <div class="no-data">Loading badges...</div>
-                </div>
-              </div>
-
-              <!-- Quick Actions -->
-              <div class="stats-card">
-                <h3><i class="fas fa-cog me-2"></i>Quick Actions</h3>
-                
-                <div class="d-grid gap-2">
-                  <button class="btn btn-primary" onclick="refreshSteamData()" id="refreshBtn">
-                    <i class="fas fa-sync me-2"></i>Refresh Steam Data
-                  </button>
-                  <button class="btn btn-outline-primary" onclick="viewLibrary()">
-                    <i class="fas fa-book me-2"></i>View Library
-                  </button>
-                  <button class="btn btn-outline-primary" onclick="exportData()">
-                    <i class="fas fa-download me-2"></i>Export Data
-                  </button>
-                  <button class="btn btn-outline-primary" onclick="connectSteam()" id="connectSteamBtn" style="display: none;">
-                    <i class="fab fa-steam me-2"></i>Connect Steam
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Games Tab -->
-        <div class="tab-pane fade" id="games" role="tabpanel">
-          <!-- Search and Sort Controls -->
-          <div class="search-container">
-            <div class="row">
-              <div class="col-md-6">
-                <input type="text" id="search-input" class="form-control search-box" placeholder="Search your games...">
-              </div>
-              <div class="col-md-6">
-                <div class="sort-controls">
-                  <select id="sort-by" class="form-control">
-                    <option value="name">Sort by Name</option>
-                    <option value="playtime">Sort by Playtime</option>
-                    <option value="lastplayed">Sort by Last Played</option>
-                  </select>
-                  <select id="sort-order" class="form-control">
-                    <option value="asc">Ascending</option>
-                    <option value="desc">Descending</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Games List -->
-          <div class="stats-card">
-            <h3><i class="fas fa-gamepad me-2"></i>Your Steam Library</h3>
-            <div id="games-list">
-              <div class="no-data">Click "My Games" tab to load your Steam library...</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Games List -->
+    <div id="games-list">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading your games...</div>
     </div>
   </div>
 
   <!-- Game Detail Modal -->
-  <div class="modal fade game-detail-modal" id="gameDetailModal" tabindex="-1">
+  <div class="modal fade" id="gameDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="gameDetailTitle">Game Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body" id="gameDetailBody">
           <!-- Game details will be loaded here -->
@@ -826,264 +303,36 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    let currentUser = null;
-    let steamData = null;
+    // Global variables
     let allGames = [];
     let filteredGames = [];
     let currentSort = { by: 'name', order: 'asc' };
 
-    // Check authentication and load profile on page load
+    // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
-      // FIRST: Check isLoggedIn localStorage variable
-      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      loadMyGames();
       
-      if (isLoggedIn !== 'true') {
-          console.log('User not logged in, redirecting to login');
-          window.location.href = 'login.html';
-          return;
-      }
-      
-      console.log('User is logged in, proceeding to load profile');
-      checkAuthenticationAndLoadProfile();
-
-      // Add event listeners for games tab
+      // Add event listeners
       document.getElementById('search-input').addEventListener('input', filterGames);
       document.getElementById('sort-by').addEventListener('change', sortGames);
       document.getElementById('sort-order').addEventListener('change', sortGames);
-
-      // Add tab change listener
-      document.getElementById('games-tab').addEventListener('shown.bs.tab', function (e) {
-        loadMyGames();
-      });
     });
 
-    // Enhanced authentication check
-    async function checkAuthenticationAndLoadProfile() {
-      try {
-        // Step 1: Check local authentication
-        const localAuth = checkLocalAuthentication();
-        
-        if (!localAuth) {
-          console.log('No local authentication found, redirecting to login');
-          //redirectToLogin();
-          return;
-        }
-
-        // Step 2: Update UI for authenticated user
-        updateAuthButton(true);
-
-        // Step 3: Load profile data
-        await loadProfileData();
-
-      } catch (error) {
-        console.error('Authentication/profile loading failed:', error);
-        handleAuthError(error);
-      }
-    }
-
-    // Check for local authentication indicators
-    function checkLocalAuthentication() {
-      // Check for various auth tokens
-      const authToken = localStorage.getItem('authToken') || 
-                       localStorage.getItem('steam_auth_token') ||
-                       sessionStorage.getItem('authToken');
-      
-      if (authToken) {
-        console.log('Found auth token');
-        return { type: 'token', value: authToken };
-      }
-
-      // Check for stored user data
-      const userData = localStorage.getItem('currentUser') || 
-                      sessionStorage.getItem('currentUser');
-      
-      if (userData) {
-        try {
-          const user = JSON.parse(userData);
-          if (user.id && user.steamId) {
-            console.log('Found stored user data with Steam ID');
-            return { type: 'user', value: user };
-          }
-        } catch (e) {
-          console.error('Error parsing stored user data:', e);
-        }
-      }
-
-      // Check for auth cookies
-      const authCookies = document.cookie.split(';').find(cookie => 
-        cookie.trim().startsWith('steam_session=') || 
-        cookie.trim().startsWith('auth_token=') ||
-        cookie.trim().startsWith('user_session=')
-      );
-      
-      if (authCookies) {
-        console.log('Found auth cookie');
-        return { type: 'cookie', value: authCookies };
-      }
-
-      // Check URL parameters for OAuth returns
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('steam_auth') === 'success' || urlParams.get('logged_in') === 'true') {
-        console.log('Found auth URL parameter');
-        return { type: 'url', value: urlParams.toString() };
-      }
-
-      return null;
-    }
-
-    // Load profile data
-    async function loadProfileData() {
-      try {
-        // Get stored user data
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          try {
-            currentUser = JSON.parse(storedUser);
-          } catch (e) {
-            console.error('Error parsing stored user data:', e);
-          }
-        }
-
-        // Load Steam profile data if available
-        if (currentUser?.steamId) {
-          await loadSteamProfile();
-        } else {
-          displayProfileWithoutSteam();
-        }
-
-      } catch (error) {
-        console.error('Error loading profile data:', error);
-        displayProfileWithoutSteam();
-      }
-    }
-
-    // Load Steam profile data
-    async function loadSteamProfile() {
-      try {
-        updateLoadingText('Loading Steam profile data...');
-
-        // Try to fetch Steam data from your backend
-        const steamResponse = await fetch(`/api/steam/profile/${currentUser.steamId}`, {
-          method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (steamResponse.ok) {
-          steamData = await steamResponse.json();
-          displayProfileWithSteam(steamData);
-        } else {
-          console.log('Steam API request failed, showing basic profile');
-          displayProfileWithoutSteam();
-        }
-
-      } catch (error) {
-        console.error('Error loading Steam data:', error);
-        displayProfileWithoutSteam();
-      }
-    }
-
-    // Display profile with Steam data
-    function displayProfileWithSteam(data) {
-      hideLoadingState();
-      
-      // Update profile header with Steam data
-      document.getElementById('profileName').textContent = data.personaname || currentUser.username;
-      
-      // Set avatar if available
-      if (data.avatarfull) {
-        const avatar = document.getElementById('profileAvatar');
-        avatar.style.backgroundImage = `url(${data.avatarfull})`;
-        avatar.innerHTML = ''; // Remove the default icon
-      }
-
-      // Update status
-      const statusMap = {1: 'Offline', 2: 'Online', 3: 'Away', 4: 'Snooze', 5: 'Looking to trade', 6: 'Looking to play'};
-      const status = statusMap[data.personastate] || 'Offline';
-      const isOnline = data.personastate > 1;
-      
-      document.getElementById('profileStatus').innerHTML = `
-        <i class="fas fa-circle ${isOnline ? 'text-success' : 'text-secondary'}"></i> 
-        ${status} • Steam ID: ${data.steamid}
-      `;
-
-      // Update Steam connection status
-      const steamStatus = document.getElementById('steamStatus');
-      steamStatus.className = 'steam-connection-status steam-connected';
-      steamStatus.innerHTML = `
-        <i class="fab fa-steam"></i>
-        <span>Steam Connected • Level ${data.player_level || 'N/A'}</span>
-      `;
-
-      // Update stats with Steam data
-      document.getElementById('gamesOwned').textContent = data.game_count || 0;
-      document.getElementById('hoursPlayed').textContent = formatNumber(Math.round((data.total_playtime || 0) / 60));
-      document.getElementById('achievements').textContent = data.total_achievements || 0;
-      document.getElementById('totalSpent').textContent = `${formatNumber(data.total_spent || 0)}`;
-
-      // Load additional Steam data
-      loadRecentGames();
-      loadGameStats();
-      loadRecentActivity();
-      
-      showConnectedActions();
-    }
-
-    // Display profile without Steam data
-    function displayProfileWithoutSteam() {
-      hideLoadingState();
-      
-      // Update profile header with basic user data
-      document.getElementById('profileName').textContent = currentUser.username || 'User';
-      
-      document.getElementById('profileStatus').innerHTML = `
-        <i class="fas fa-circle text-secondary"></i> 
-        Offline • User ID: ${currentUser.id}
-      `;
-
-      // Update Steam connection status
-      const steamStatus = document.getElementById('steamStatus');
-      steamStatus.className = 'steam-connection-status steam-disconnected';
-      steamStatus.innerHTML = `
-        <i class="fab fa-steam"></i>
-        <span>Steam Not Connected</span>
-      `;
-
-      // Show basic stats
-      document.getElementById('gamesOwned').textContent = '0';
-      document.getElementById('hoursPlayed').textContent = '0';
-      document.getElementById('achievements').textContent = '0';
-      document.getElementById('totalSpent').textContent = '$0';
-
-      // Show placeholder content
-      showPlaceholderContent();
-      showDisconnectedActions();
-    }
-
-    // Load user's Steam games
+    // Load user's games
     async function loadMyGames() {
       try {
-        const steamId = currentUser?.steamId || localStorage.getItem('steam_id');
+		const user = JSON.parse(localStorage.getItem('user'));
+		const steamId = user?.steamId || null;
         
         if (!steamId) {
           document.getElementById('games-list').innerHTML = `
-            <div class="no-data">
+            <div class="error">
               <i class="fas fa-exclamation-triangle"></i> 
-              No Steam ID found. Please connect your Steam account first.
+              No Steam ID found. Please log in first.
             </div>
           `;
           return;
         }
-
-        // Show loading
-        document.getElementById('games-list').innerHTML = `
-          <div class="no-data">
-            <i class="fas fa-spinner fa-spin"></i> Loading your Steam games...
-          </div>
-        `;
 
         // Send the steam_id as a query parameter
         const response = await fetch(`/api/owned-games?steam_id=${steamId}`);
@@ -1094,31 +343,26 @@
           filteredGames = [...allGames];
           
           displayGames();
+          updateStats();
         } else {
           document.getElementById('games-list').innerHTML = `
-            <div class="no-data text-warning">
-              <i class="fas fa-exclamation-triangle"></i> 
-              Error: ${data.message}
-            </div>
+            <div class="error">Error: ${data.message}</div>
           `;
         }
       } catch (error) {
         console.error('Error loading games:', error);
         document.getElementById('games-list').innerHTML = `
-          <div class="no-data text-danger">
-            <i class="fas fa-exclamation-triangle"></i> 
-            Error loading games. Please try again.
-          </div>
+          <div class="error">Error loading games. Please try again.</div>
         `;
       }
     }
 
-    // Display games in the games tab
+    // Display games
     function displayGames() {
       const gamesListDiv = document.getElementById('games-list');
       
       if (filteredGames.length === 0) {
-        gamesListDiv.innerHTML = '<div class="no-data">No games found.</div>';
+        gamesListDiv.innerHTML = '<div class="text-center"><p>No games found.</p></div>';
         return;
       }
 
@@ -1135,18 +379,19 @@
 
         const thumbnailUrl = game.img_icon_url ? 
           `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg` :
-          'https://via.placeholder.com/64x64/2563eb/ffffff?text=Game';
+          'https://via.placeholder.com/64x64/667eea/ffffff?text=Game';
 
         return `
-          <div class="game-card" onclick="showGameDetail(${game.appid})">
-            <div class="game-image" style="background-image: url('${thumbnailUrl}')"
-                 onerror="this.style.backgroundImage='url(https://via.placeholder.com/64x64/2563eb/ffffff?text=Game)'"></div>
-            <div class="flex-grow-1">
-              <div class="fw-bold">${game.name}</div>
-              <div class="text-muted small">
-                App ID: ${game.appid} • Last Played: ${lastPlayedText}
+          <div class="game-item" onclick="showGameDetail(${game.appid})">
+            <img src="${thumbnailUrl}" alt="${game.name}" class="game-thumbnail" 
+                 onerror="this.src='https://via.placeholder.com/64x64/667eea/ffffff?text=Game'">
+            <div class="game-info">
+              <div class="game-title">${game.name}</div>
+              <div class="game-stats">
+                <div>App ID: ${game.appid}</div>
+                <div>Last Played: ${lastPlayedText}</div>
+                <div class="playtime-badge">${playtimeText}</div>
               </div>
-              <div class="playtime-badge">${playtimeText}</div>
             </div>
           </div>
         `;
@@ -1203,7 +448,7 @@
           <strong>Community Stats:</strong> ${game.has_community_visible_stats ? 'Available' : 'Not Available'}
         </div>
         
-        <div class="detail-stat">
+        <div class="last-played">
           <strong>Last Played:</strong> ${lastPlayedText}
         </div>
       `;
@@ -1261,521 +506,23 @@
       displayGames();
     }
 
-    // Load recent games from Steam
-    async function loadRecentGames() {
-      try {
-        const response = await fetch(`/api/steam/recentgames/${currentUser.steamId}`, {
-          credentials: 'include',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          displayRecentGames(data.games || []);
-        } else {
-          showNoDataMessage('recentGames', 'No recent games found');
-        }
-      } catch (error) {
-        console.error('Error loading recent games:', error);
-        showNoDataMessage('recentGames', 'Unable to load recent games');
-      }
-    }
-
-    // Load gaming statistics
-    async function loadGameStats() {
-      try {
-        const response = await fetch(`/api/steam/userstats/${currentUser.steamId}`, {
-          credentials: 'include',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          displayGamingStats(data.stats || []);
-          displayFavoriteGenres(data.genres || []);
-        } else {
-          showDefaultStats();
-        }
-      } catch (error) {
-        console.error('Error loading game stats:', error);
-        showDefaultStats();
-      }
-    }
-
-    // Load recent activity
-    async function loadRecentActivity() {
-      try {
-        const response = await fetch(`/api/steam/activity/${currentUser.steamId}`, {
-          credentials: 'include',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}` }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          displayRecentActivity(data.activities || []);
-        } else {
-          showNoDataMessage('recentActivity', 'No recent activity found');
-        }
-      } catch (error) {
-        console.error('Error loading recent activity:', error);
-        showNoDataMessage('recentActivity', 'Unable to load recent activity');
-      }
-    }
-
-    // Display recent games
-    function displayRecentGames(games) {
-      const container = document.getElementById('recentGames');
-      container.innerHTML = '';
-
-      if (games.length === 0) {
-        container.innerHTML = '<div class="no-data">No recent games found</div>';
-        return;
-      }
-
-      games.slice(0, 5).forEach(game => {
-        const gameCard = document.createElement('div');
-        gameCard.className = 'game-card';
-        gameCard.innerHTML = `
-          <div class="game-image" style="background-image: url('https://steamcdn-a.akamaihd.net/steam/apps/${game.appid}/header.jpg')"></div>
-          <div class="flex-grow-1">
-            <div class="fw-bold">${game.name}</div>
-            <div class="text-muted small">
-              ${formatPlaytime(game.playtime_2weeks || 0)} hours (last 2 weeks)
-              • ${formatPlaytime(game.playtime_forever || 0)} hours total
-            </div>
-          </div>
-        `;
-        container.appendChild(gameCard);
-      });
-    }
-
-    // Display gaming statistics
-    function displayGamingStats(stats) {
-      const container = document.getElementById('gamingStats');
-      container.innerHTML = '';
-
-      if (stats.length === 0) {
-        showDefaultStats();
-        return;
-      }
-
-      stats.forEach(stat => {
-        const statItem = document.createElement('div');
-        statItem.className = 'stat-item';
-        statItem.innerHTML = `
-          <div class="d-flex align-items-center">
-            <div class="stat-icon">
-              <i class="${stat.icon || 'fas fa-gamepad'}"></i>
-            </div>
-            <div class="stat-content">
-              <div class="stat-title">${stat.title}</div>
-              <div class="stat-subtitle">${stat.subtitle}</div>
-            </div>
-          </div>
-          <div class="stat-value">${stat.value}</div>
-        `;
-        container.appendChild(statItem);
-      });
-    }
-
-    // Show default statistics when Steam data is unavailable
-    function showDefaultStats() {
-      const defaultStats = [
-        {
-          icon: 'fas fa-clock',
-          title: 'Average Session',
-          subtitle: 'Connect Steam to see data',
-          value: '-'
-        },
-        {
-          icon: 'fas fa-calendar-week',
-          title: 'Most Active Day',
-          subtitle: 'Connect Steam to see data',
-          value: '-'
-        },
-        {
-          icon: 'fas fa-trophy',
-          title: 'Completion Rate',
-          subtitle: 'Connect Steam to see data',
-          value: '-'
-        }
-      ];
-      displayGamingStats(defaultStats);
-    }
-
-    // Display favorite genres
-    function displayFavoriteGenres(genres) {
-      const container = document.getElementById('favoriteGenres');
-      container.innerHTML = '';
-
-      if (genres.length === 0) {
-        container.innerHTML = '<div class="no-data">Connect Steam to see your favorite genres</div>';
-        return;
-      }
-
-      genres.forEach(genre => {
-        const genreItem = document.createElement('div');
-        genreItem.className = 'mb-3';
-        genreItem.innerHTML = `
-          <div class="d-flex justify-content-between mb-1">
-            <span>${genre.name}</span>
-            <span>${genre.percentage}%</span>
-          </div>
-          <div class="progress-custom">
-            <div class="progress-bar-custom" style="width: ${genre.percentage}%"></div>
-          </div>
-        `;
-        container.appendChild(genreItem);
-      });
-    }
-
-    // Display recent activity
-    function displayRecentActivity(activities) {
-      const container = document.getElementById('recentActivity');
-      container.innerHTML = '';
-
-      if (activities.length === 0) {
-        container.innerHTML = '<div class="no-data">No recent activity to display</div>';
-        return;
-      }
-
-      activities.forEach(activity => {
-        const activityCard = document.createElement('div');
-        activityCard.className = 'activity-card';
-        activityCard.innerHTML = `
-          <div class="activity-time">${formatTimeAgo(activity.timestamp)}</div>
-          <div class="activity-icon">
-            <i class="${activity.icon || 'fas fa-play'}"></i>
-          </div>
-          <strong>${activity.title}</strong><br>
-          <span class="text-muted">${activity.description}</span>
-        `;
-        container.appendChild(activityCard);
-      });
-    }
-
-    // Show placeholder content for disconnected users
-    function showPlaceholderContent() {
-      // Gaming stats
-      document.getElementById('gamingStats').innerHTML = `
-        <div class="text-center py-4">
-          <i class="fab fa-steam fa-3x text-muted mb-3"></i>
-          <h5>Connect your Steam account</h5>
-          <p class="text-muted">Get detailed gaming statistics, recent games, and achievements</p>
-        </div>
-      `;
-
-      // Recent games
-      document.getElementById('recentGames').innerHTML = `
-        <div class="text-center py-4">
-          <i class="fas fa-gamepad fa-2x text-muted mb-3"></i>
-          <p class="text-muted">Your recent games will appear here after connecting Steam</p>
-        </div>
-      `;
-
-      // Favorite genres
-      document.getElementById('favoriteGenres').innerHTML = `
-        <div class="text-center py-4">
-          <i class="fas fa-heart fa-2x text-muted mb-3"></i>
-          <p class="text-muted">Your favorite genres will be calculated from your Steam library</p>
-        </div>
-      `;
-
-      // Recent activity
-      document.getElementById('recentActivity').innerHTML = `
-        <div class="text-center py-4">
-          <i class="fas fa-history fa-2x text-muted mb-3"></i>
-          <p class="text-muted">Your gaming activity will be tracked here</p>
-        </div>
-      `;
-
-      // Badges
-      document.getElementById('recentBadges').innerHTML = `
-        <div class="text-center py-4">
-          <i class="fas fa-medal fa-2x text-muted mb-3"></i>
-          <p class="text-muted">Earn badges by connecting Steam and using the platform</p>
-        </div>
-      `;
-    }
-
-    // Show actions for connected users
-    function showConnectedActions() {
-      document.getElementById('connectSteamBtn').style.display = 'none';
-      document.getElementById('refreshBtn').style.display = 'block';
-    }
-
-    // Show actions for disconnected users
-    function showDisconnectedActions() {
-      document.getElementById('connectSteamBtn').style.display = 'block';
-      document.getElementById('refreshBtn').style.display = 'none';
-    }
-
-    // Utility functions
-    function hideLoadingState() {
-      document.getElementById('loadingState').classList.add('d-none');
-      document.getElementById('profileContent').classList.remove('d-none');
-    }
-
-    function updateLoadingText(text) {
-      const loadingText = document.querySelector('.loading-text');
-      if (loadingText) {
-        loadingText.textContent = text;
-      }
-    }
-
-    function showNoDataMessage(containerId, message) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = `<div class="no-data">${message}</div>`;
-    }
-
-    function handleAuthError(error) {
-      console.error('Authentication error:', error);
+    // Update stats
+    function updateStats() {
+      const totalGames = allGames.length;
+      const totalPlaytime = allGames.reduce((sum, game) => sum + game.playtime_forever, 0);
+      const avgPlaytime = totalGames > 0 ? totalPlaytime / totalGames : 0;
       
-      if (error.message === 'Authentication expired') {
-        // Clear expired auth data
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('currentUser');
-        sessionStorage.clear();
-        redirectToLogin('Your session has expired. Please log in again.');
-      } else {
-        showError(error.message || 'Unable to load profile');
-      }
-    }
-
-    function redirectToLogin(message = null) {
-      if (message) {
-        sessionStorage.setItem('loginMessage', message);
-      }
-      window.location.href = 'login.html';
-    }
-
-    function showError(message = 'Unable to load profile') {
-      document.getElementById('loadingState').classList.add('d-none');
-      document.getElementById('errorState').classList.remove('d-none');
-      document.getElementById('errorMessage').textContent = message;
-      updateAuthButton(false);
-    }
-
-    function formatPlaytime(minutes) {
-      const hours = Math.floor(minutes / 60);
-      return hours.toFixed(1);
-    }
-
-    function formatNumber(num) {
-      if (num >= 1000000) {
-        return (num / 1000000).toFixed(1) + 'M';
-      }
-      if (num >= 1000) {
-        return (num / 1000).toFixed(1) + 'K';
-      }
-      return num.toString();
-    }
-
-    function formatTimeAgo(timestamp) {
-      const now = new Date();
-      const time = new Date(timestamp);
-      const diffInHours = Math.floor((now - time) / (1000 * 60 * 60));
-
-      if (diffInHours < 1) return 'Just now';
-      if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+      document.getElementById('total-games').textContent = totalGames;
+      document.getElementById('total-playtime').textContent = Math.floor(totalPlaytime / 60) + 'h';
+      document.getElementById('avg-playtime').textContent = Math.floor(avgPlaytime / 60) + 'h';
       
-      const diffInDays = Math.floor(diffInHours / 24);
-      if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-      
-      const diffInWeeks = Math.floor(diffInDays / 7);
-      return `${diffInWeeks} week${diffInWeeks > 1 ? 's' : ''} ago`;
+      document.getElementById('games-stats').style.display = 'block';
     }
 
-    // Update authentication button
-    function updateAuthButton(isLoggedIn) {
-      const authButton = document.getElementById('authButton');
-      
-      if (isLoggedIn) {
-        authButton.innerHTML = `
-          <button class="btn logout-btn" onclick="signOut()">
-            <i class="fas fa-sign-out-alt"></i> Sign Out
-          </button>
-        `;
-      } else {
-        authButton.innerHTML = `
-          <button class="btn btn-outline-light" onclick="window.location.href='login.html'">
-            <i class="fas fa-sign-in-alt"></i> Sign In
-          </button>
-        `;
-      }
-    }
-
-    // Action functions
-    async function refreshSteamData() {
-      const refreshBtn = document.getElementById('refreshBtn');
-      const originalContent = refreshBtn.innerHTML;
-      
-      refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Refreshing...';
-      refreshBtn.disabled = true;
-
-      try {
-        // Force refresh Steam data
-        const response = await fetch(`/api/steam/refresh/${currentUser.steamId}`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}` }
-        });
-
-        if (response.ok) {
-          // Reload the profile data
-          await loadSteamProfile();
-          
-          // Show success message
-          const alert = document.createElement('div');
-          alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
-          alert.style.cssText = 'top: 100px; right: 20px; z-index: 1050; max-width: 300px;';
-          alert.innerHTML = `
-            Steam data refreshed successfully!
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          `;
-          document.body.appendChild(alert);
-          
-          setTimeout(() => {
-            if (alert.parentNode) {
-              alert.parentNode.removeChild(alert);
-            }
-          }, 3000);
-        } else {
-          throw new Error('Failed to refresh Steam data');
-        }
-      } catch (error) {
-        console.error('Error refreshing Steam data:', error);
-        alert('Failed to refresh Steam data. Please try again.');
-      } finally {
-        refreshBtn.innerHTML = originalContent;
-        refreshBtn.disabled = false;
-      }
-    }
-
-    function connectSteam() {
-      // Redirect to Steam OAuth
-      window.location.href = '/api/auth/steam';
-    }
-
-    function retryLoadProfile() {
-      // Reload the page to retry
-      window.location.reload();
-    }
-
-    function viewLibrary() {
-      // Switch to games tab
-      const gamesTab = document.getElementById('games-tab');
-      const tab = new bootstrap.Tab(gamesTab);
-      tab.show();
-    }
-
-    function exportData() {
-      if (!currentUser) {
-        alert('No user data available to export');
-        return;
-      }
-
-      const exportData = {
-        profile: {
-          username: currentUser.username,
-          email: currentUser.email,
-          steamId: currentUser.steamId,
-          joinDate: currentUser.createdAt
-        },
-        steamData: steamData || null,
-        games: allGames || [],
-        exportDate: new Date().toISOString(),
-        version: '1.0'
-      };
-      
-      const dataStr = JSON.stringify(exportData, null, 2);
-      const dataBlob = new Blob([dataStr], {type: 'application/json'});
-      const url = URL.createObjectURL(dataBlob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${currentUser.username}-steam-profile-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      alert('Profile data exported successfully!');
-    }
-
-    async function signOut() {
-      if (confirm('Are you sure you want to sign out?')) {
-        try {
-          // Sign out from server
-          await fetch('/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include'
-          });
-        } catch (error) {
-          console.log('Server logout failed:', error);
-        }
-        
-        // Clear all local authentication data
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('steam_auth_token');
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('steam_id');
-        sessionStorage.clear();
-        
-        // Clear cookies
-        document.cookie.split(";").forEach(function(c) { 
-          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
-        });
-        
-        window.location.href = 'index.html';
-      }
-    }
-
-    // Initialize animations after profile loads
-    function initializeAnimations() {
-      setTimeout(() => {
-        // Animate progress bars
-        const progressBars = document.querySelectorAll('.progress-bar-custom');
-        progressBars.forEach(bar => {
-          const width = bar.style.width;
-          bar.style.width = '0%';
-          setTimeout(() => {
-            bar.style.width = width;
-          }, 100);
-        });
-
-        // Animate stat items
-        const statItems = document.querySelectorAll('.stat-item');
-        statItems.forEach((item, index) => {
-          item.style.opacity = '0';
-          item.style.transform = 'translateY(20px)';
-          setTimeout(() => {
-            item.style.transition = 'all 0.5s ease';
-            item.style.opacity = '1';
-            item.style.transform = 'translateY(0)';
-          }, index * 100);
-        });
-
-        // Animate cards
-        const cards = document.querySelectorAll('.stats-card');
-        cards.forEach((card, index) => {
-          card.style.opacity = '0';
-          card.style.transform = 'translateY(30px)';
-          setTimeout(() => {
-            card.style.transition = 'all 0.6s ease';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
-          }, index * 150);
-        });
-      }, 500);
-    }
-
-    // Call animations after profile is displayed
-    function triggerAnimations() {
-      initializeAnimations();
+    // Show my games (for navigation)
+    function showMyGames() {
+      loadMyGames();
     }
   </script>
-
 </body>
 </html>

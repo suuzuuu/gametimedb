@@ -935,22 +935,13 @@
     async function loadProfileData() {
       try {
         // Get stored user data
-        const storedUser = localStorage.getItem('currentUser');
+        const storedUser = localStorage.getItem('user');
         if (storedUser) {
           try {
             currentUser = JSON.parse(storedUser);
           } catch (e) {
             console.error('Error parsing stored user data:', e);
           }
-        }
-
-        // If no stored user, create basic user object
-        if (!currentUser) {
-          currentUser = {
-            id: 'user_' + Date.now(),
-            username: 'Steam User',
-            steamId: localStorage.getItem('steam_id') || null
-          };
         }
 
         // Load Steam profile data if available

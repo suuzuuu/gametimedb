@@ -481,9 +481,9 @@ app.get('/api/games/steam/:appid', async (req, res) => {
 // Route to fetch owned games
 app.get('/api/owned-games', async (req, res, next) => {
   try {
-    const { steamId } = req.query;
+    const { steam_id } = req.query;
     
-    if (!steamId) {
+    if (!steam_id) {
       return res.status(400).json({
         success: false,
         message: 'Steam ID is required'
@@ -493,7 +493,7 @@ app.get('/api/owned-games', async (req, res, next) => {
     const response = await axios.get(`${STEAM_API_BASE_URL}/IPlayerService/GetOwnedGames/v0001/`, {
       params: {
         key: STEAM_API_KEY,
-        steamid: steamId,
+        steamid: steam_id,
         include_appinfo: 1,
         format: 'json'
       }
@@ -513,77 +513,6 @@ app.get('/api/owned-games', async (req, res, next) => {
       });
     }
   } catch (error) {
-    next(error);
-  }
-});
-
-//Owned games endpoint
-app.get('/api/owned-games', async (req, res, next) => {
-  try {
-    // Get steam_id from query parameters
-    const { steam_id } = req.query;
-   
-    // Validate that steam_id is provided
-    if (!steam_id) {
-      return res.status(400).json({
-        success: false,
-        message: 'Steam ID is required'
-      });
-    }
-
-    // Validate steam_id format (Steam IDs are typically 17-digit numbers)
-    const steamIdRegex = /^\d{17}$/;
-    if (!steamIdRegex.test(steam_id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid Steam ID format. Steam ID should be a 17-digit number.'
-      });
-    }
-
-    const response = await axios.get(`${STEAM_API_BASE_URL}/IPlayerService/GetOwnedGames/v0001/`, {
-      params: {
-        key: STEAM_API_KEY,
-        steamid: steam_id, // Use the parsed steam_id from query parameters
-        include_appinfo: 1, // Include game details like name
-        format: 'json' // Ensure JSON response
-      }
-    });
-
-    // Check if the response contains games
-    const data = response.data;
-    if (data.response && data.response.games) {
-      res.json({
-        success: true,
-        games: data.response.games,
-        game_count: data.response.game_count,
-        steam_id: steam_id // Include the steam_id in the response for reference
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: 'No games found or user profile is private',
-        steam_id: steam_id
-      });
-    }
-  } catch (error) {
-    // Enhanced error handling for Steam API specific errors
-    if (error.response) {
-      // Steam API returned an error response
-      const status = error.response.status;
-      if (status === 401) {
-        return res.status(500).json({
-          success: false,
-          message: 'Invalid Steam API key'
-        });
-      } else if (status === 403) {
-        return res.status(403).json({
-          success: false,
-          message: 'Access denied. User profile may be private.'
-        });
-      }
-    }
-   
-    // Pass other errors to error-handling middleware
     next(error);
   }
 });

@@ -11,29 +11,50 @@
   <!-- Link to Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <style>
-    /* Custom gradient navbar styles */
+  <style>
+    /* Custom CSS for dark mode - matching index page */
+    :root {
+      --bg-primary: #111827; /* gray-900 */
+      --bg-secondary: #1f2937; /* gray-800 */
+      --bg-tertiary: #374151; /* gray-700 */
+      --text-primary: #ffffff;
+      --text-secondary: #d1d5db; /* gray-300 */
+      --text-muted: #9ca3af; /* gray-400 */
+      --border-color: #4b5563; /* gray-600 */
+      --accent-blue: #2563eb; /* blue-600 */
+      --accent-blue-hover: #1d4ed8; /* blue-700 */
+      --accent-green: #059669; /* emerald-600 */
+      --accent-red: #dc2626; /* red-600 */
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* Custom navbar styles - matching index */
     .navbar-custom {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--bg-secondary);
       padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .navbar-custom .navbar-brand {
-      color: white;
+      color: var(--text-primary);
       font-size: 1.5rem;
       font-weight: bold;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
 
     .navbar-custom .nav-link {
-      color: white !important;
+      color: var(--text-secondary) !important;
       margin: 0 1rem;
       transition: all 0.3s ease;
       font-weight: 500;
     }
 
     .navbar-custom .nav-link:hover {
-      color: #ffd700 !important;
+      color: var(--accent-blue) !important;
       transform: translateY(-2px);
     }
 
@@ -42,36 +63,32 @@
       padding: 2rem;
     }
 
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-    }
-
     .games-header {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-color: var(--bg-secondary);
       padding: 2rem;
       border-radius: 15px;
       margin-bottom: 2rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-color);
       text-align: center;
     }
 
     .game-item {
-      background: white;
+      background-color: var(--bg-secondary);
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       text-decoration: none;
       color: inherit;
+      cursor: pointer;
     }
 
     .game-item:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      border-color: var(--accent-blue);
       text-decoration: none;
       color: inherit;
     }
@@ -90,19 +107,19 @@
     }
 
     .game-title {
-      color: #667eea;
+      color: var(--accent-blue);
       font-weight: bold;
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
     }
 
     .game-stats {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 0.9rem;
     }
 
     .playtime-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: var(--accent-blue);
       color: white;
       padding: 0.25rem 0.75rem;
       border-radius: 15px;
@@ -115,54 +132,84 @@
     .loading {
       text-align: center;
       padding: 2rem;
-      color: #667eea;
+      color: var(--accent-blue);
     }
 
     .error {
-      background: #f8d7da;
-      color: #721c24;
+      background-color: rgba(220, 38, 38, 0.2);
+      color: var(--accent-red);
       padding: 1rem;
-      border-radius: 5px;
+      border-radius: 8px;
       margin: 1rem 0;
+      border: 1px solid rgba(220, 38, 38, 0.3);
     }
 
     .search-container {
-      background: white;
+      background-color: var(--bg-secondary);
       padding: 1.5rem;
       border-radius: 10px;
       margin-bottom: 2rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
     }
 
     .search-box {
-      border-radius: 25px;
-      padding: 0.75rem 1.5rem;
-      border: 2px solid #e0e0e0;
-      font-size: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 1.1rem;
       transition: all 0.3s ease;
     }
 
     .search-box:focus {
-      border-color: #667eea;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+      border-color: var(--accent-blue);
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
       outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .search-box::placeholder {
+      color: var(--text-muted);
     }
 
     .games-stats {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      background-color: var(--accent-green);
       color: white;
-      padding: 1rem;
+      padding: 1.5rem;
       border-radius: 10px;
       margin-bottom: 2rem;
       text-align: center;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .games-stats:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
     }
 
     /* Game Detail Modal Styles */
     .modal-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
       border-radius: 10px 10px 0 0;
+    }
+
+    .modal-content {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-body {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .btn-close-white {
+      filter: invert(1);
     }
 
     .game-header-image {
@@ -174,15 +221,16 @@
     }
 
     .detail-stat {
-      background: #f8f9fa;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
       padding: 0.75rem;
       border-radius: 8px;
       margin-bottom: 0.5rem;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid var(--accent-blue);
     }
 
     .last-played {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 0.9rem;
       font-style: italic;
     }
@@ -195,10 +243,84 @@
       margin-bottom: 1rem;
     }
 
+    .form-control {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: 8px;
+    }
+
+    .form-control:focus {
+      background-color: var(--bg-tertiary);
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Authentication buttons - matching index */
+    .login-btn {
+      background-color: var(--accent-blue);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.5rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .login-btn:hover {
+      background-color: var(--accent-blue-hover);
+      transform: translateY(-2px);
+      color: white;
+      text-decoration: none;
+    }
+
+    .logout-btn {
+      background-color: var(--accent-red);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.5rem;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #b91c1c;
+      transform: translateY(-2px);
+      color: white;
+    }
+
+    h1, h2, h3 {
+      color: var(--text-primary);
+    }
+
+    .text-center h1 {
+      color: var(--text-primary);
+    }
+
+    .text-muted {
+      color: var(--text-muted) !important;
+    }
+
     @media (max-width: 768px) {
       .sort-controls {
         flex-direction: column;
         align-items: stretch;
+      }
+      
+      .main-content {
+        padding: 1rem;
+      }
+      
+      .search-container {
+        padding: 1rem;
       }
       
       .game-item {
@@ -220,12 +342,12 @@
       <a class="navbar-brand mb-2" href="index.html">Steam Games Database</a>
       <div class="d-flex justify-content-center flex-wrap">
         <ul class="navbar-nav d-flex flex-row align-items-center">
-          <li class="nav-item"><a class="nav-link" href="#" style="color: #2563eb !important;">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" style="color: var(--accent-blue) !important;">Profile</a></li>
           <li class="nav-item"><a class="nav-link" href="index.html">Browse Games</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Privacy</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
-          <li class="nav-item ms-3" id="authButton">
-            <!-- Auth button will be populated by JavaScript -->
+          <li class="nav-item"><a class="nav-link" href="privacy.html">Privacy</a></li>
+          <li class="nav-item"><a class="nav-link" href="TOS.html">Terms Of Service</a></li>
+          <li class="nav-item ms-3" id="auth-section">
+            <!-- Authentication button will be updated by JS -->
           </li>
         </ul>
       </div>
@@ -235,8 +357,8 @@
  <div class="container main-content">
     <!-- Games Header -->
     <div class="games-header">
-      <h1 style="color: #667eea; margin-bottom: 1rem;">My Steam Games</h1>
-      <p class="mb-0" style="color: #666;">Your personal Steam library</p>
+      <h1 style="color: var(--text-primary); margin-bottom: 1rem;">My Steam Games</h1>
+      <p class="mb-0" style="color: var(--text-secondary);">Your personal Steam library</p>
     </div>
 
     <!-- Games Stats -->
@@ -307,10 +429,70 @@
     let allGames = [];
     let filteredGames = [];
     let currentSort = { by: 'name', order: 'asc' };
+    let isLoggedIn = false;
+
+    // Check authentication status on page load
+    function checkAuth() {
+      // Check localStorage for isLoggedIn status (case-sensitive)
+      const loginStatus = localStorage.getItem('isLoggedIn');
+      
+      // User is logged in if 'isLoggedIn' is the string 'true' (since localStorage stores values as strings)
+      isLoggedIn = loginStatus === 'true';
+      
+      // Update UI based on auth status
+      updateAuthUI();
+    }
+
+    // Update authentication UI
+    function updateAuthUI() {
+      const authSection = document.getElementById('auth-section');
+      
+      if (isLoggedIn) {
+        // User is signed in, show Sign Out button, hide Sign In
+        authSection.innerHTML = `
+          <button class="btn logout-btn" onclick="signOut()">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        `;
+      } else {
+        // User is not signed in, show Sign In link, hide Sign Out
+        authSection.innerHTML = `
+          <a href="login.html" class="login-btn">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </a>
+        `;
+      }
+    }
+
+    // Sign out function
+    function signOut() {
+        // Clear authentication data
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('user'); // Also clear user data
+        
+        // Update global state and UI
+        isLoggedIn = false;
+        updateAuthUI();
+        
+        // Redirect to main page or show login message
+        window.location.href = 'index.html';
+    }
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
-      loadMyGames();
+      checkAuth();
+      
+      // Only load games if user is logged in
+      if (isLoggedIn) {
+        loadMyGames();
+      } else {
+        document.getElementById('games-list').innerHTML = `
+          <div class="error">
+            <i class="fas fa-exclamation-triangle"></i> 
+            Please sign in to view your Steam games.
+          </div>
+        `;
+      }
       
       // Add event listeners
       document.getElementById('search-input').addEventListener('input', filterGames);
@@ -318,11 +500,21 @@
       document.getElementById('sort-order').addEventListener('change', sortGames);
     });
 
+    // Also check when the full page loads
+    window.addEventListener('load', function() {
+      checkAuth();
+    });
+
+    // Check auth when returning to the page (in case of browser back/forward)
+    window.addEventListener('pageshow', function(event) {
+      checkAuth();
+    });
+
     // Load user's games
     async function loadMyGames() {
       try {
-		const user = JSON.parse(localStorage.getItem('user'));
-		const steamId = user?.steamId || null;
+        const user = JSON.parse(localStorage.getItem('user'));
+        const steamId = user?.steamId || null;
         
         if (!steamId) {
           document.getElementById('games-list').innerHTML = `
@@ -379,12 +571,12 @@
 
         const thumbnailUrl = game.img_icon_url ? 
           `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg` :
-          'https://via.placeholder.com/64x64/667eea/ffffff?text=Game';
+          'https://via.placeholder.com/64x64/2563eb/ffffff?text=Game';
 
         return `
           <div class="game-item" onclick="showGameDetail(${game.appid})">
             <img src="${thumbnailUrl}" alt="${game.name}" class="game-thumbnail" 
-                 onerror="this.src='https://via.placeholder.com/64x64/667eea/ffffff?text=Game'">
+                 onerror="this.src='https://via.placeholder.com/64x64/2563eb/ffffff?text=Game'">
             <div class="game-info">
               <div class="game-title">${game.name}</div>
               <div class="game-stats">

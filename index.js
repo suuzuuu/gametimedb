@@ -10,7 +10,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const STEAM_API_BASE_URL = process.env.STEAM_API_BASE_URL
 const STEAM_API_KEY = process.env.STEAM_API_KEY
-const STEAM_ID = process.env.STEAM_ID
 const ENCRYPTION_KEY = process.env.STEAM_API_ENCRYPTION_KEY; // 32 bytes
 
 // Middleware
@@ -482,16 +481,24 @@ app.get('/api/games/steam/:appid', async (req, res) => {
 // Route to fetch owned games
 app.get('/api/owned-games', async (req, res, next) => {
   try {
+    const { steamId } = req.query;
+    
+    if (!steamId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Steam ID is required'
+      });
+    }
+
     const response = await axios.get(`${STEAM_API_BASE_URL}/IPlayerService/GetOwnedGames/v0001/`, {
       params: {
         key: STEAM_API_KEY,
-        steamid: STEAM_ID,
-        include_appinfo: 1, // Include game details like name
-        format: 'json' // Ensure JSON response
+        steamid: steamId,
+        include_appinfo: 1,
+        format: 'json'
       }
     });
 
-    // Check if the response contains games
     const data = response.data;
     if (data.response && data.response.games) {
       res.json({
@@ -506,7 +513,6 @@ app.get('/api/owned-games', async (req, res, next) => {
       });
     }
   } catch (error) {
-    // Pass errors to error-handling middleware
     next(error);
   }
 });

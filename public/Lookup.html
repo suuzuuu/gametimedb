@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Steam Games Dashboard</title>
+  <title>Steam ID Lookup Dashboard</title>
 
   <!-- Link to Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -117,7 +117,7 @@
       box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
     }
 
-    .game-card {
+    .user-card {
       background-color: var(--bg-secondary);
       border-radius: 10px;
       padding: 1.5rem;
@@ -126,34 +126,48 @@
       transition: all 0.3s ease;
     }
 
-    .game-card:hover {
+    .user-card:hover {
       transform: translateY(-2px);
       border-color: var(--accent-blue);
     }
 
-    .game-name {
+    .user-name {
       color: var(--accent-blue);
       font-weight: bold;
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
     }
 
-    .game-info {
+    .user-info {
       color: var(--text-secondary);
       margin: 0.25rem 0;
     }
 
-    .game-info strong {
+    .user-info strong {
       color: var(--text-primary);
     }
 
-    .price-tag {
-      background-color: var(--accent-blue);
-      color: white;
+    .status-tag {
       padding: 0.25rem 0.75rem;
       border-radius: 15px;
       font-weight: bold;
       display: inline-block;
+      font-size: 0.85rem;
+    }
+
+    .status-online {
+      background-color: var(--accent-green);
+      color: white;
+    }
+
+    .status-offline {
+      background-color: var(--text-muted);
+      color: white;
+    }
+
+    .status-away {
+      background-color: #f59e0b;
+      color: white;
     }
 
     .loading {
@@ -329,6 +343,20 @@
       color: var(--text-muted);
     }
 
+    .avatar-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
     @media (max-width: 768px) {
       .sort-controls {
         flex-direction: column;
@@ -346,11 +374,15 @@
       .filter-section {
         padding: 1rem;
       }
+
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-
 
   <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid d-flex flex-column align-items-center">
@@ -358,7 +390,7 @@
       <div class="d-flex justify-content-center flex-wrap">
         <ul class="navbar-nav d-flex flex-row align-items-center">
           <li class="nav-item"><a class="nav-link" href="profile.html" onclick="showStats()">Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="Lookup.html" onclick="showUsers()">Browse Users</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showUsers()">Browse Users</a></li>
           <li class="nav-item"><a class="nav-link" href="privacy.html">Privacy</a></li>
           <li class="nav-item"><a class="nav-link" href="TOS.html">Terms Of Service</a></li>
           <li class="nav-item"><a class="nav-link" href="index.html">Games Database</a></li>
@@ -374,13 +406,19 @@
     <!-- Welcome Section -->
     <div id="welcome-section" class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-        <h1 class="mb-4 text-center" style="color: var(--text-primary); font-weight: 300;">Welcome to Steam Games Dashboard</h1>
+        <h1 class="mb-4 text-center" style="color: var(--text-primary); font-weight: 300;">Steam ID Lookup</h1>
         <div class="search-container text-center">
-          <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Search Steam Games</h3>
-          <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Search for games..." />
-          <button class="btn btn-primary" onclick="searchGames()">
-            <i class="fas fa-search"></i> Search Games
+          <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Look up Steam Users</h3>
+          <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Enter Steam ID, Custom URL, or Username..." />
+          <button class="btn btn-primary" onclick="searchUsers()">
+            <i class="fas fa-search"></i> Lookup User
           </button>
+          <div class="mt-3">
+            <small class="text-muted">
+              <i class="fas fa-info-circle"></i> 
+              You can search by Steam ID (e.g., 76561198000000000), Custom URL (e.g., gaben), or Username
+            </small>
+          </div>
         </div>
       </div>
     </div>
@@ -388,31 +426,31 @@
     <!-- Statistics Section -->
     <div id="stats-section" class="row" style="display: none;">
       <div class="col-12">
-        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Database Statistics</h2>
+        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Lookup Statistics</h2>
         <div id="stats-content" class="row">
           <!-- Stats will be loaded here -->
         </div>
       </div>
     </div>
 
-    <!-- Games Section -->
-    <div id="games-section" class="row" style="display: none;">
+    <!-- Users Section -->
+    <div id="users-section" class="row" style="display: none;">
       <div class="col-12">
-        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Steam Games Database</h2>
+        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Steam User Lookup</h2>
         
         <!-- Filters -->
         <div id="filter-section" class="filter-section" style="display: none;">
           <div class="row">
             <div class="col-md-6">
-              <input type="text" id="search-input" class="form-control mb-3" placeholder="Search games...">
+              <input type="text" id="search-input" class="form-control mb-3" placeholder="Search users...">
             </div>
             <div class="col-md-6">
               <div class="sort-controls">
                 <select id="sort-by" class="form-control">
-                  <option value="name">Sort by Name</option>
-                  <option value="price_usd">Sort by Price</option>
-                  <option value="hours_to_beat">Sort by Hours</option>
-                  <option value="cost_per_hour">Sort by Cost/Hour</option>
+                  <option value="username">Sort by Username</option>
+                  <option value="last_online">Sort by Last Online</option>
+                  <option value="account_created">Sort by Account Age</option>
+                  <option value="level">Sort by Level</option>
                 </select>
                 <select id="sort-order" class="form-control">
                   <option value="ASC">Ascending</option>
@@ -423,27 +461,28 @@
           </div>
           
           <div class="row mt-3">
-            <div class="col-md-3">
-              <label>Min Price ($)</label>
-              <input type="number" id="min-price" class="form-control" placeholder="0" min="0" step="0.01">
+            <div class="col-md-4">
+              <label>Status</label>
+              <select id="status-filter" class="form-control">
+                <option value="">All Status</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+                <option value="away">Away</option>
+              </select>
             </div>
-            <div class="col-md-3">
-              <label>Max Price ($)</label>
-              <input type="number" id="max-price" class="form-control" placeholder="100" min="0" step="0.01">
+            <div class="col-md-4">
+              <label>Min Level</label>
+              <input type="number" id="min-level" class="form-control" placeholder="0" min="0" step="1">
             </div>
-            <div class="col-md-3">
-              <label>Min Hours</label>
-              <input type="number" id="min-hours" class="form-control" placeholder="0" min="0" step="0.1">
-            </div>
-            <div class="col-md-3">
-              <label>Max Hours</label>
-              <input type="number" id="max-hours" class="form-control" placeholder="200" min="0" step="0.1">
+            <div class="col-md-4">
+              <label>Max Level</label>
+              <input type="number" id="max-level" class="form-control" placeholder="100" min="0" step="1">
             </div>
           </div>
           
           <div class="row mt-3">
             <div class="col-12 text-center">
-              <button class="btn btn-primary" onclick="loadGames()">
+              <button class="btn btn-primary" onclick="loadUsers()">
                 <i class="fas fa-filter"></i> Apply Filters
               </button>
               <button class="btn btn-secondary ms-2" onclick="clearFilters()">
@@ -456,9 +495,9 @@
           </div>
         </div>
 
-        <!-- Games List -->
-        <div id="games-list">
-          <!-- Games will be loaded here -->
+        <!-- Users List -->
+        <div id="users-list">
+          <!-- Users will be loaded here -->
         </div>
 
         <!-- Pagination -->
@@ -478,15 +517,50 @@
     let currentFilters = {};
     let isLoggedIn = false;
 
+    // Mock data for demonstration
+    const mockUsers = [
+      {
+        steam_id: "76561198000000001",
+        username: "GamerPro2024",
+        display_name: "Pro Gamer",
+        avatar: "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg",
+        status: "online",
+        level: 42,
+        account_created: "2015-03-15",
+        last_online: "2024-08-04T10:30:00Z",
+        profile_url: "https://steamcommunity.com/profiles/76561198000000001",
+        games_owned: 247
+      },
+      {
+        steam_id: "76561198000000002", 
+        username: "SteamMaster",
+        display_name: "Steam Master",
+        avatar: "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg",
+        status: "offline",
+        level: 18,
+        account_created: "2018-06-22",
+        last_online: "2024-08-03T15:45:00Z",
+        profile_url: "https://steamcommunity.com/profiles/76561198000000002",
+        games_owned: 89
+      },
+      {
+        steam_id: "76561198000000003",
+        username: "RetroGamer",
+        display_name: "Retro Gaming Fan",
+        avatar: "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg",
+        status: "away",
+        level: 67,
+        account_created: "2012-11-08",
+        last_online: "2024-08-04T08:20:00Z",
+        profile_url: "https://steamcommunity.com/profiles/76561198000000003",
+        games_owned: 521
+      }
+    ];
+
     // Check authentication status on page load
     function checkAuth() {
-      // Check localStorage for isLoggedin status (case-sensitive)
       const loginStatus = localStorage.getItem('isLoggedIn');
-      
-      // User is logged in if 'isLoggedin' is the string 'true' (since localStorage stores values as strings)
       isLoggedIn = loginStatus === 'true';
-      
-      // Update UI based on auth status
       updateAuthUI();
     }
 
@@ -495,14 +569,12 @@
       const authSection = document.getElementById('auth-section');
       
       if (isLoggedIn) {
-        // User is signed in, show Sign Out button, hide Sign In
         authSection.innerHTML = `
           <button class="btn logout-btn" onclick="signOut()">
             <i class="fas fa-sign-out-alt"></i> Sign Out
           </button>
         `;
       } else {
-        // User is not signed in, show Sign In link, hide Sign Out
         authSection.innerHTML = `
           <a href="login.html" class="login-btn">
             <i class="fas fa-sign-in-alt"></i> Sign In
@@ -513,16 +585,9 @@
 
     // Sign out function
     function signOut() {
-        // Clear authentication data
         localStorage.removeItem('isLoggedIn');
-        
-        // Update global state and UI
         isLoggedIn = false;
         updateAuthUI();
-        
-        // Reset to welcome section
-        //hideAllSections();
-        //document.getElementById('welcome-section').style.display = 'flex';      
     }
 
     // Initialize authentication on page load
@@ -532,7 +597,7 @@
       // Add event listeners
       document.getElementById('main-search').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-          searchGames();
+          searchUsers();
         }
       });
 
@@ -540,7 +605,7 @@
       if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
           if (e.key === 'Enter') {
-            loadGames();
+            loadUsers();
           }
         });
       }
@@ -556,16 +621,15 @@
       checkAuth();
     });
 
-    // Search games from main search
-    function searchGames() {
+    // Search users from main search
+    function searchUsers() {
       const searchTerm = document.getElementById('main-search').value.trim();
       if (searchTerm) {
-        // Clear existing search input and show games section
         const searchInput = document.getElementById('search-input');
         if (searchInput) {
           searchInput.value = searchTerm;
         }
-        showGames();
+        showUsers();
         
         // Hide filters initially after search
         const filterSection = document.getElementById('filter-section');
@@ -573,7 +637,7 @@
           filterSection.style.display = 'none';
         }
         
-        loadGames();
+        loadUsers();
       }
     }
 
@@ -588,19 +652,19 @@
       await loadStats();
     }
 
-    // Show games section
-    function showGames() {
+    // Show users section
+    function showUsers() {
       hideAllSections();
-      document.getElementById('games-section').style.display = 'block';
+      document.getElementById('users-section').style.display = 'block';
       
-      // Show filters when browsing games (not after search)
+      // Show filters when browsing users (not after search)
       const filterSection = document.getElementById('filter-section');
       const searchInput = document.getElementById('search-input');
       if (filterSection && searchInput && !searchInput.value) {
         filterSection.style.display = 'block';
       }
       
-      loadGames();
+      loadUsers();
     }
 
     // Toggle filters visibility
@@ -615,46 +679,47 @@
 
     // Hide all sections
     function hideAllSections() {
-      //document.getElementById('welcome-section').style.display = 'none';
       document.getElementById('stats-section').style.display = 'none';
-      document.getElementById('games-section').style.display = 'none';
+      document.getElementById('users-section').style.display = 'none';
     }
 
     // Load statistics
     async function loadStats() {
       try {
-        const response = await fetch('/api/games/stats');
-        const data = await response.json();
+        // Mock statistics data
+        const stats = {
+          total_lookups: 15847,
+          avg_level: 28.5,
+          active_users: 3421,
+          avg_games_owned: 156.7
+        };
         
-        if (data.success) {
-          const stats = data.data.statistics;
-          document.getElementById('stats-content').innerHTML = `
-            <div class="col-md-3">
-              <div class="stats-card">
-                <h4>${stats.total_games}</h4>
-                <p>Total Games</p>
-              </div>
+        document.getElementById('stats-content').innerHTML = `
+          <div class="col-md-3">
+            <div class="stats-card">
+              <h4>${stats.total_lookups}</h4>
+              <p>Total Lookups</p>
             </div>
-            <div class="col-md-3">
-              <div class="stats-card">
-                <h4>$${parseFloat(stats.avg_price).toFixed(2)}</h4>
-                <p>Average Price</p>
-              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <h4>${stats.avg_level}</h4>
+              <p>Average Level</p>
             </div>
-            <div class="col-md-3">
-              <div class="stats-card">
-                <h4>${parseFloat(stats.avg_hours).toFixed(1)}h</h4>
-                <p>Average Hours</p>
-              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <h4>${stats.active_users}</h4>
+              <p>Active Users</p>
             </div>
-            <div class="col-md-3">
-              <div class="stats-card">
-                <h4>$${parseFloat(stats.avg_cost_per_hour).toFixed(2)}/h</h4>
-                <p>Average Cost/Hour</p>
-              </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stats-card">
+              <h4>${stats.avg_games_owned}</h4>
+              <p>Average Games Owned</p>
             </div>
-          `;
-        }
+          </div>
+        `;
       } catch (error) {
         console.error('Error loading stats:', error);
         document.getElementById('stats-content').innerHTML = `
@@ -665,79 +730,76 @@
       }
     }
 
-    // Load games with filters
-    async function loadGames() {
-      const gamesListDiv = document.getElementById('games-list');
-      gamesListDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading games...</div>';
+    // Load users with filters
+    async function loadUsers() {
+      const usersListDiv = document.getElementById('users-list');
+      usersListDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>';
 
       try {
-        // Get filter values
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Filter mock data based on search
         const searchInput = document.getElementById('search-input');
-        const minPriceInput = document.getElementById('min-price');
-        const maxPriceInput = document.getElementById('max-price');
-        const minHoursInput = document.getElementById('min-hours');
-        const maxHoursInput = document.getElementById('max-hours');
-        const sortByInput = document.getElementById('sort-by');
-        const sortOrderInput = document.getElementById('sort-order');
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        
+        let filteredUsers = mockUsers;
+        if (searchTerm) {
+          filteredUsers = mockUsers.filter(user => 
+            user.username.toLowerCase().includes(searchTerm) ||
+            user.display_name.toLowerCase().includes(searchTerm) ||
+            user.steam_id.includes(searchTerm)
+          );
+        }
 
-        const filters = {
-          search: searchInput ? searchInput.value : '',
-          minPrice: minPriceInput ? minPriceInput.value : '',
-          maxPrice: maxPriceInput ? maxPriceInput.value : '',
-          minHours: minHoursInput ? minHoursInput.value : '',
-          maxHours: maxHoursInput ? maxHoursInput.value : '',
-          sortBy: sortByInput ? sortByInput.value : 'name',
-          order: sortOrderInput ? sortOrderInput.value : 'ASC',
-          page: currentPage
-        };
+        if (filteredUsers.length === 0) {
+          usersListDiv.innerHTML = '<div class="text-center"><p>No users found matching your criteria.</p></div>';
+          return;
+        }
 
-        // Build query string
-        const queryParams = new URLSearchParams();
-        Object.keys(filters).forEach(key => {
-          if (filters[key]) {
-            queryParams.append(key, filters[key]);
-          }
-        });
-
-        const response = await fetch(`/api/games?${queryParams.toString()}`);
-        const data = await response.json();
-
-        if (data.success) {
-          const games = data.data.games;
-          const pagination = data.data.pagination;
-          
-          if (games.length === 0) {
-            gamesListDiv.innerHTML = '<div class="text-center"><p>No games found matching your criteria.</p></div>';
-            return;
-          }
-
-          // Display games
-          gamesListDiv.innerHTML = games.map(game => `
-            <div class="game-card">
-              <div class="game-name">${game.name}</div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="game-info"><strong>Steam ID:</strong> ${game.steam_appid}</div>
-                  <div class="game-info"><strong>Hours to Beat:</strong> ${game.hours_to_beat ? game.hours_to_beat + 'h' : 'N/A'}</div>
-                </div>
-                <div class="col-md-6 text-md-end">
-                  <div class="price-tag">$${parseFloat(game.price_usd).toFixed(2)}</div>
-                  <div class="game-info mt-2">
-                    <strong>Cost per Hour:</strong> ${game.cost_per_hour ? '$' + parseFloat(game.cost_per_hour).toFixed(2) : 'N/A'}
-                  </div>
+        // Display users
+        usersListDiv.innerHTML = filteredUsers.map(user => `
+          <div class="user-card">
+            <div class="profile-header">
+              <img src="${user.avatar}" alt="${user.username}" class="avatar-img" onerror="this.src='https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'">
+              <div>
+                <div class="user-name">${user.display_name}</div>
+                <div class="user-info"><strong>Username:</strong> ${user.username}</div>
+                <span class="status-tag status-${user.status}">${user.status.toUpperCase()}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="user-info"><strong>Steam ID:</strong> ${user.steam_id}</div>
+                <div class="user-info"><strong>Level:</strong> ${user.level}</div>
+                <div class="user-info"><strong>Games Owned:</strong> ${user.games_owned}</div>
+              </div>
+              <div class="col-md-6">
+                <div class="user-info"><strong>Account Created:</strong> ${new Date(user.account_created).toLocaleDateString()}</div>
+                <div class="user-info"><strong>Last Online:</strong> ${new Date(user.last_online).toLocaleDateString()}</div>
+                <div class="user-info mt-2">
+                  <a href="${user.profile_url}" target="_blank" class="btn btn-sm btn-primary">
+                    <i class="fas fa-external-link-alt"></i> View Profile
+                  </a>
                 </div>
               </div>
             </div>
-          `).join('');
+          </div>
+        `).join('');
 
-          // Update pagination
-          updatePagination(pagination);
-        } else {
-          gamesListDiv.innerHTML = `<div class="error">Error: ${data.message}</div>`;
-        }
+        // Mock pagination
+        updatePagination({
+          currentPage: 1,
+          totalPages: 1,
+          totalUsers: filteredUsers.length,
+          usersPerPage: 10,
+          hasPrevPage: false,
+          hasNextPage: false
+        });
+
       } catch (error) {
-        console.error('Error loading games:', error);
-        gamesListDiv.innerHTML = '<div class="error">Error loading games. Please try again.</div>';
+        console.error('Error loading users:', error);
+        usersListDiv.innerHTML = '<div class="error">Error loading users. Please try again.</div>';
       }
     }
 
@@ -778,9 +840,9 @@
       paginationHTML += '</ul></nav>';
       paginationHTML += `<div class="mt-2 text-center">
         <small class="text-muted">
-          Showing ${((currentPage - 1) * pagination.gamesPerPage) + 1} to 
-          ${Math.min(currentPage * pagination.gamesPerPage, pagination.totalGames)} 
-          of ${pagination.totalGames} games
+          Showing ${((currentPage - 1) * pagination.usersPerPage) + 1} to 
+          ${Math.min(currentPage * pagination.usersPerPage, pagination.totalUsers)} 
+          of ${pagination.totalUsers} users
         </small>
       </div>`;
 
@@ -791,30 +853,28 @@
     function changePage(page) {
       if (page >= 1 && page <= totalPages) {
         currentPage = page;
-        loadGames();
+        loadUsers();
       }
     }
 
     // Clear filters
     function clearFilters() {
       const searchInput = document.getElementById('search-input');
-      const minPriceInput = document.getElementById('min-price');
-      const maxPriceInput = document.getElementById('max-price');
-      const minHoursInput = document.getElementById('min-hours');
-      const maxHoursInput = document.getElementById('max-hours');
+      const statusFilter = document.getElementById('status-filter');
+      const minLevelInput = document.getElementById('min-level');
+      const maxLevelInput = document.getElementById('max-level');
       const sortByInput = document.getElementById('sort-by');
       const sortOrderInput = document.getElementById('sort-order');
 
       if (searchInput) searchInput.value = '';
-      if (minPriceInput) minPriceInput.value = '';
-      if (maxPriceInput) maxPriceInput.value = '';
-      if (minHoursInput) minHoursInput.value = '';
-      if (maxHoursInput) maxHoursInput.value = '';
-      if (sortByInput) sortByInput.value = 'name';
+      if (statusFilter) statusFilter.value = '';
+      if (minLevelInput) minLevelInput.value = '';
+      if (maxLevelInput) maxLevelInput.value = '';
+      if (sortByInput) sortByInput.value = 'username';
       if (sortOrderInput) sortOrderInput.value = 'ASC';
       
       currentPage = 1;
-      loadGames();
+      loadUsers();
     }
   </script>
 </body>

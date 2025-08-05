@@ -386,7 +386,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid d-flex flex-column align-items-center">
-      <a class="navbar-brand mb-2" href="index.html">GameTimeDB</a>
+      <a class="navbar-brand mb-2" href="#">Steam ID Lookup</a>
       <div class="d-flex justify-content-center flex-wrap">
         <ul class="navbar-nav d-flex flex-row align-items-center">
           <li class="nav-item"><a class="nav-link" href="profile.html" onclick="showStats()">Profile</a></li>
@@ -406,17 +406,17 @@
     <!-- Welcome Section -->
     <div id="welcome-section" class="row justify-content-center">
       <div class="col-md-10 col-lg-8">
-        <h1 class="mb-4 text-center" style="color: var(--text-primary); font-weight: 300;">Steam ID Lookup</h1>
+        <h1 class="mb-4 text-center" style="color: var(--text-primary); font-weight: 300;">Welcome to Steam ID Lookup</h1>
         <div class="search-container text-center">
           <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">Look up Steam Users</h3>
-          <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Enter Steam ID, Custom URL, or Username..." />
+          <input type="text" id="main-search" class="form-control search-box mb-3" placeholder="Enter Steam ID (e.g., 76561198000000000)..." />
           <button class="btn btn-primary" onclick="searchUsers()">
-            <i class="fas fa-search"></i> Lookup User
+            <i class="fas fa-search"></i> View Games
           </button>
           <div class="mt-3">
             <small class="text-muted">
               <i class="fas fa-info-circle"></i> 
-              You can search by Steam ID (e.g., 76561198000000000), Custom URL (e.g., gaben), or Username
+              Enter a Steam ID to view that user's game library and playtime statistics
             </small>
           </div>
         </div>
@@ -436,61 +436,18 @@
     <!-- Users Section -->
     <div id="users-section" class="row" style="display: none;">
       <div class="col-12">
-        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Steam User Lookup</h2>
+        <h2 class="mb-4 text-center" style="color: var(--text-primary);">Steam Games Lookup</h2>
         
-        <!-- Filters -->
-        <div id="filter-section" class="filter-section" style="display: none;">
+        <!-- Simplified search bar -->
+        <div class="search-container">
           <div class="row">
-            <div class="col-md-6">
-              <input type="text" id="search-input" class="form-control mb-3" placeholder="Search users...">
-            </div>
-            <div class="col-md-6">
-              <div class="sort-controls">
-                <select id="sort-by" class="form-control">
-                  <option value="username">Sort by Username</option>
-                  <option value="last_online">Sort by Last Online</option>
-                  <option value="account_created">Sort by Account Age</option>
-                  <option value="level">Sort by Level</option>
-                </select>
-                <select id="sort-order" class="form-control">
-                  <option value="ASC">Ascending</option>
-                  <option value="DESC">Descending</option>
-                </select>
+            <div class="col-12">
+              <input type="text" id="search-input" class="form-control search-box mb-3" placeholder="Enter Steam ID to view their games...">
+              <div class="text-center">
+                <button class="btn btn-primary" onclick="loadUsers()">
+                  <i class="fas fa-search"></i> View Games
+                </button>
               </div>
-            </div>
-          </div>
-          
-          <div class="row mt-3">
-            <div class="col-md-4">
-              <label>Status</label>
-              <select id="status-filter" class="form-control">
-                <option value="">All Status</option>
-                <option value="online">Online</option>
-                <option value="offline">Offline</option>
-                <option value="away">Away</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label>Min Level</label>
-              <input type="number" id="min-level" class="form-control" placeholder="0" min="0" step="1">
-            </div>
-            <div class="col-md-4">
-              <label>Max Level</label>
-              <input type="number" id="max-level" class="form-control" placeholder="100" min="0" step="1">
-            </div>
-          </div>
-          
-          <div class="row mt-3">
-            <div class="col-12 text-center">
-              <button class="btn btn-primary" onclick="loadUsers()">
-                <i class="fas fa-filter"></i> Apply Filters
-              </button>
-              <button class="btn btn-secondary ms-2" onclick="clearFilters()">
-                <i class="fas fa-times"></i> Clear Filters
-              </button>
-              <button class="btn btn-info ms-2" onclick="toggleFilters()">
-                <i class="fas fa-sliders-h"></i> Toggle Advanced Filters
-              </button>
             </div>
           </div>
         </div>
@@ -730,77 +687,163 @@
       }
     }
 
-    // Load users with filters
+    // Load user games using the existing API endpoint
     async function loadUsers() {
       const usersListDiv = document.getElementById('users-list');
-      usersListDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading users...</div>';
+      const searchInput = document.getElementById('search-input');
+      const searchTerm = searchInput ? searchInput.value.trim() : '';
+      
+      if (!searchTerm) {
+        usersListDiv.innerHTML = '<div class="text-center"><p>Please enter a Steam ID to search for their games.</p></div>';
+        return;
+      }
+
+      usersListDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading user games...</div>';
 
       try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Filter mock data based on search
-        const searchInput = document.getElementById('search-input');
-        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-        
-        let filteredUsers = mockUsers;
-        if (searchTerm) {
-          filteredUsers = mockUsers.filter(user => 
-            user.username.toLowerCase().includes(searchTerm) ||
-            user.display_name.toLowerCase().includes(searchTerm) ||
-            user.steam_id.includes(searchTerm)
-          );
+        // Use the same endpoint as profile.html
+        const response = await fetch(`/api/owned-games?steam_id=${encodeURIComponent(searchTerm)}`);
+        const data = await response.json();
+
+        if (data.success) {
+          const games = data.games || [];
+          const gameCount = data.game_count || 0;
+          
+          if (games.length === 0) {
+            usersListDiv.innerHTML = '<div class="text-center"><p>No games found for this Steam ID or the profile is private.</p></div>';
+            return;
+          }
+
+          // Display user's games in the same format as profile.html
+          displayUserGames(games, gameCount, searchTerm);
+          
+        } else {
+          usersListDiv.innerHTML = `<div class="error">Error: ${data.message}</div>`;
         }
 
-        if (filteredUsers.length === 0) {
-          usersListDiv.innerHTML = '<div class="text-center"><p>No users found matching your criteria.</p></div>';
-          return;
-        }
+      } catch (error) {
+        console.error('Error loading user games:', error);
+        usersListDiv.innerHTML = '<div class="error">Error loading user games. Please try again.</div>';
+      }
+    }
 
-        // Display users
-        usersListDiv.innerHTML = filteredUsers.map(user => `
-          <div class="user-card">
+    // Display user's games (similar to profile.html)
+    function displayUserGames(games, gameCount, steamId) {
+      const usersListDiv = document.getElementById('users-list');
+      
+      // Calculate total playtime
+      const totalPlaytime = games.reduce((sum, game) => sum + game.playtime_forever, 0);
+      const avgPlaytime = games.length > 0 ? totalPlaytime / games.length : 0;
+      
+      // Sort games by playtime (most played first)
+      games.sort((a, b) => b.playtime_forever - a.playtime_forever);
+      
+      let html = `
+        <!-- User Header -->
+        <div class="user-card mb-4">
+          <div class="profile-header">
+            <div>
+              <div class="user-name">Steam ID: ${steamId}</div>
+              <div class="user-info"><strong>Total Games:</strong> ${gameCount}</div>
+              <div class="user-info"><strong>Total Playtime:</strong> ${Math.floor(totalPlaytime / 60)}h ${totalPlaytime % 60}m</div>
+              <div class="user-info"><strong>Average Playtime:</strong> ${Math.floor(avgPlaytime / 60)}h ${avgPlaytime % 60}m</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Games List -->
+        <h3 class="mb-3" style="color: var(--accent-blue);">User's Games</h3>
+      `;
+      
+      html += games.map(game => {
+        const playtimeHours = Math.floor(game.playtime_forever / 60);
+        const playtimeMinutes = game.playtime_forever % 60;
+        const playtimeText = playtimeHours > 0 ? 
+          `${playtimeHours}h ${playtimeMinutes}m` : 
+          `${playtimeMinutes}m`;
+        
+        const lastPlayedText = game.rtime_last_played ? 
+          new Date(game.rtime_last_played * 1000).toLocaleDateString() : 
+          'Never';
+
+        const thumbnailUrl = game.img_icon_url ? 
+          `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg` :
+          'https://via.placeholder.com/64x64/2563eb/ffffff?text=Game';
+
+        return `
+          <div class="user-card game-item" onclick="showGameDetail(${game.appid}, '${game.name.replace(/'/g, "\\'")}', '${playtimeText}', '${lastPlayedText}', '${thumbnailUrl}')">
             <div class="profile-header">
-              <img src="${user.avatar}" alt="${user.username}" class="avatar-img" onerror="this.src='https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg'">
+              <img src="${thumbnailUrl}" alt="${game.name}" class="avatar-img" 
+                   onerror="this.src='https://via.placeholder.com/64x64/2563eb/ffffff?text=Game'">
               <div>
-                <div class="user-name">${user.display_name}</div>
-                <div class="user-info"><strong>Username:</strong> ${user.username}</div>
-                <span class="status-tag status-${user.status}">${user.status.toUpperCase()}</span>
+                <div class="user-name">${game.name}</div>
+                <div class="user-info"><strong>App ID:</strong> ${game.appid}</div>
+                <div class="user-info"><strong>Last Played:</strong> ${lastPlayedText}</div>
+                <span class="status-tag status-online">${playtimeText}</span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="user-info"><strong>Steam ID:</strong> ${user.steam_id}</div>
-                <div class="user-info"><strong>Level:</strong> ${user.level}</div>
-                <div class="user-info"><strong>Games Owned:</strong> ${user.games_owned}</div>
-              </div>
-              <div class="col-md-6">
-                <div class="user-info"><strong>Account Created:</strong> ${new Date(user.account_created).toLocaleDateString()}</div>
-                <div class="user-info"><strong>Last Online:</strong> ${new Date(user.last_online).toLocaleDateString()}</div>
-                <div class="user-info mt-2">
-                  <a href="${user.profile_url}" target="_blank" class="btn btn-sm btn-primary">
-                    <i class="fas fa-external-link-alt"></i> View Profile
-                  </a>
+          </div>
+        `;
+      }).join('');
+
+      usersListDiv.innerHTML = html;
+      
+      // Hide pagination since we're showing all games
+      document.getElementById('pagination').innerHTML = '';
+    }
+
+    // Show game detail modal (similar to profile.html)
+    function showGameDetail(appid, gameName, playtimeText, lastPlayedText, thumbnailUrl) {
+      const headerImageUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`;
+
+      // Create modal HTML if it doesn't exist
+      let modal = document.getElementById('gameDetailModal');
+      if (!modal) {
+        const modalHTML = `
+          <div class="modal fade" id="gameDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                <div class="modal-header" style="background-color: var(--bg-secondary); color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
+                  <h5 class="modal-title" id="gameDetailTitle">Game Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" style="filter: invert(1);"></button>
+                </div>
+                <div class="modal-body" id="gameDetailBody" style="background-color: var(--bg-secondary); color: var(--text-primary);">
+                  <!-- Game details will be loaded here -->
                 </div>
               </div>
             </div>
           </div>
-        `).join('');
-
-        // Mock pagination
-        updatePagination({
-          currentPage: 1,
-          totalPages: 1,
-          totalUsers: filteredUsers.length,
-          usersPerPage: 10,
-          hasPrevPage: false,
-          hasNextPage: false
-        });
-
-      } catch (error) {
-        console.error('Error loading users:', error);
-        usersListDiv.innerHTML = '<div class="error">Error loading users. Please try again.</div>';
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        modal = document.getElementById('gameDetailModal');
       }
+
+      document.getElementById('gameDetailTitle').textContent = gameName;
+      document.getElementById('gameDetailBody').innerHTML = `
+        <img src="${headerImageUrl}" alt="${gameName}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;" 
+             onerror="this.style.display='none'">
+        
+        <div style="background-color: var(--bg-tertiary); color: var(--text-primary); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid var(--accent-blue);">
+          <strong>Steam App ID:</strong> ${appid}
+        </div>
+        
+        <div style="background-color: var(--bg-tertiary); color: var(--text-primary); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid var(--accent-blue);">
+          <strong>Total Playtime:</strong> ${playtimeText}
+        </div>
+        
+        <div style="color: var(--text-secondary); font-size: 0.9rem; font-style: italic;">
+          <strong>Last Played:</strong> ${lastPlayedText}
+        </div>
+        
+        <div class="mt-3">
+          <a href="https://store.steampowered.com/app/${appid}" target="_blank" class="btn btn-primary">
+            <i class="fas fa-external-link-alt"></i> View on Steam Store
+          </a>
+        </div>
+      `;
+
+      const bootstrapModal = new bootstrap.Modal(modal);
+      bootstrapModal.show();
     }
 
     // Update pagination
